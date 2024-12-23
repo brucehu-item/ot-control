@@ -103,18 +103,26 @@ const showApproval = (row) => {
 // 处理审批
 const handleApproval = async () => {
   try {
-    await api.overtime.approveOvertimeRequest({
-      requestId: currentApprovalRequest.value.id,
-      action: approvalForm.value.action,
-      comment: approvalForm.value.comment
-    })
+    if (approvalForm.value.action === 'APPROVE') {
+      await api.overtime.approveOvertimeRequest(currentApprovalRequest.value.id, {
+        approverId: currentUser.value.userId,
+        role: currentUser.value.role,
+        comment: approvalForm.value.comment
+      })
+    } else {
+      await api.overtime.rejectOvertimeRequest(currentApprovalRequest.value.id, {
+        approverId: currentUser.value.userId,
+        role: currentUser.value.role,
+        comment: approvalForm.value.comment
+      })
+    }
     ElMessage.success('审批成功')
     approvalVisible.value = false
     approvalForm.value = { action: 'APPROVE', comment: '' }
     fetchData()
   } catch (error) {
     console.error('审批失败：', error)
-    ElMessage.error('审批失败')
+    ElMessage.error(error.message || '审批失败')
   }
 }
 

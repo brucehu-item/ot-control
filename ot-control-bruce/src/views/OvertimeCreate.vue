@@ -149,7 +149,7 @@ const submitForm = async () => {
           facilityName: currentUser.value.facilityName || '' // 如果后端返回的用户信息中没有场所名称，需要额外获取
         })
         ElMessage.success('加班申请提交成功')
-        router.push('/overtime/record')
+        router.push('/overtime')
       } catch (error) {
         console.error('提交加班申请失败：', error)
         ElMessage.error(error.message || '提交加班申请失败')
@@ -160,7 +160,7 @@ const submitForm = async () => {
 
 // 取消
 const cancel = () => {
-  router.push('/overtime/record')
+  router.push('/overtime')
 }
 
 // 禁用的日期（过去的日期）
