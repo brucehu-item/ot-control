@@ -1,20 +1,33 @@
-如果你想在本地运行ot-control项目 请做如下准备:
- - 安装nodejs 18+, 推荐使用nvm来管理nodejs版本
- - 打开任意终端 
- - 执行cd ot-control
- - 执行npm install
- - 执行npm run dev
+# `ot-control-bruce` 项目本地运行指南
 
- 下面是在终端执行npm run dev的输出，你就可以在浏览器中访问http://localhost:5173/ 来访问项目了。
- -------------------------------------------------------------------------------------------------
- ╰─± npm run dev
+## 环境准备
+1. 安装 Node.js
+   - 版本要求：18+
+   - 推荐使用 [nvm](https://github.com/nvm-sh/nvm) 来管理 Node.js 版本
 
- > ot-control@0.0.0 dev
- > vite
+## 运行步骤
+1. 打开终端
+2. 进入项目目录：
+   ```bash
+   cd ot-control-bruce
+   ```
+3. 安装依赖：
+   ```bash
+   npm install
+   ```
+4. 启动开发服务器：
+   ```bash
+   npm run dev
+   ```
 
+## 访问项目
+启动成功后，你会看到如下输出：
+```bash
+VITE v4.5.5  ready in 573 ms
 
- VITE v4.5.5  ready in 573 ms
+➜  Local:   http://localhost:5173/
+➜  Network: use --host to expose
+➜  press h to show help
+```
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h to show help
+现在你可以在浏览器中访问 http://localhost:5173/ 来查看项目了。
