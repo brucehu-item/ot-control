@@ -1,45 +1,67 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# OT-Control 前端项目构建方法论
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+## ⚠️ 重要提示
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+重要的事情说3遍，唯一重要的事情说300遍：
 
----
+当你使用AI完成了一个步骤之后，一定要花费精力去和AI生成的结果对齐，确保生成的内容是符合你预期的。不对齐的结果是后续的步骤会基于前面错误的结果持续进行，导致你得花费更多的时间去修正。🔁 x300
 
-## Edit a file
+## 📖 项目简介
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+这个项目描述了一个框架逻辑，用于实现从需求文档到前端代码的完整实现。整个过程涉及多个步骤，每个步骤都使用特定的prompt来指导AI完成。
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+目前这套方法论可以帮助完成构建一个前端项目80%-85%的工作量。框架结构和每个步骤的提示词都还有优化空间，这将是一个不断迭代的过程。
 
----
+已实现的项目：
+- `ot-control-bruce`：使用此方法论构建的完整前端项目，实现了需求文档中的绝大多数功能
+- `ot-control-init`：空项目模板，供需要尝试这套方法论的人使用
 
-## Create a file
+## 🗂️ 项目结构
 
-Next, you’ll add a new file to this repository.
+```
+ot-control-web/
+├── 🏭 ot-control-bruce/  Bruce按照方法论实现加班管理系统的前端项目目录
+├── 📝 docs/              一些补充性的文档目录
+├── 🎯 api_specs/         API接口说明书，前后端的"合同"
+├── 🧩 domain_analysis/   领域分析文档，通往代码实现的桥梁
+├── 🎨 design_guideline/  设计规范指南，包含前端和API的规范
+├── 📊 page_analysis/     页面分析文档, 每个前端页面的实现说明书
+├── 🤖 prompt/            AI提示词相关文档
+├── 🎭 mock_data/         模拟数据，可以让前端独立于后端进行测试
+├── 🌱 ot-control-init/   初始化项目工程，供需要使用这套方法论的人使用
+├── 📋 requirement.md     需求文档
+└── 📚 user_stories.md    用户故事文档
+```
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+## 🚀 构建步骤
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+1. **项目初始化**
+   - 根据选择的技术栈生成空项目结构
+   - 可选技术栈：
+     - 前端构建工具: vite
+     - 组件库: element-plus
+     - 状态管理: pinia
+     - 路由: vue-router
+     - 请求: axios
+     - 其他
+   - 或直接使用提供的 `ot-control-init` 项目模板
 
----
+2. **领域分析与设计**
+   - 使用 `prompt/1_domain_analysis_prompt.md` 生成领域建模设计
+   - 使用 `prompt/2_user_story_prompt.md` 生成用户故事
 
-## Clone a repository
+3. **API设计与实现**
+   - 使用 `prompt/3_build_api_specs_prompt.md` 生成API文档
+   - 使用 `prompt/6_develop_api_prompt.md` 实现API（包含真实和mock两套实现）
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+4. **页面设计与实现**
+   - 使用 `prompt/4_build_page_guideline_prompt.md` 生成页面设计规范
+   - 使用 `prompt/5_build_mock_data_prompt.md` 生成Mock数据
+   - 使用 `prompt/7_build_page_prompt.md` 实现具体页面
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+5. **调试优化**
+   - 根据错误信息让AI调整实现
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+## 🔍 本地运行
+
+如果你想在本地运行 `ot-control-bruce` 项目，请参考 `ot-control-bruce/README.md`

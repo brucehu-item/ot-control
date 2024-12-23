@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "userId": "W001",
+      "username": "worker1",
+      "firstName": "小明",
+      "lastName": "张",
+      "password": "worker123",
+      "role": "WORKER",
+      "departmentId": "D001",
+      "facilityId": "F001",
+      "hasApprovalAuthority": false,
+      "requiresApproval": false
+    },
+    {
+      "userId": "W002",
+      "username": "worker2",
+      "firstName": "小红",
+      "lastName": "李",
+      "password": "worker456",
+      "role": "WORKER",
+      "departmentId": "D002",
+      "facilityId": "F001",
+      "hasApprovalAuthority": false,
+      "requiresApproval": false
+    },
+    {
+      "userId": "S001",
+      "username": "supervisor1",
+      "firstName": "建国",
+      "lastName": "王",
+      "password": "super123",
+      "role": "SUPERVISOR",
+      "departmentId": "D001",
+      "facilityId": "F001",
+      "hasApprovalAuthority": true,
+      "requiresApproval": false
+    },
+    {
+      "userId": "S002",
+      "username": "supervisor2",
+      "firstName": "建军",
+      "lastName": "赵",
+      "password": "super456",
+      "role": "SUPERVISOR",
+      "departmentId": "D002",
+      "facilityId": "F001",
+      "hasApprovalAuthority": false,
+      "requiresApproval": false
+    },
+    {
+      "userId": "M001",
+      "username": "manager1",
+      "firstName": "志强",
+      "lastName": "刘",
+      "password": "manager123",
+      "role": "MANAGER",
+      "departmentId": null,
+      "facilityId": "F001",
+      "hasApprovalAuthority": false,
+      "requiresApproval": false
+    },
+    {
+      "userId": "C001",
+      "username": "customer1",
+      "firstName": "明月",
+      "lastName": "陈",
+      "password": "customer123",
+      "role": "CUSTOMER",
+      "departmentId": null,
+      "facilityId": null,
+      "hasApprovalAuthority": false,
+      "requiresApproval": true
+    },
+    {
+      "userId": "A001",
+      "username": "admin1",
+      "firstName": "管理",
+      "lastName": "杨",
+      "password": "admin123",
+      "role": "SYSTEM_ADMIN",
+      "departmentId": null,
+      "facilityId": null,
+      "hasApprovalAuthority": false,
+      "requiresApproval": false
+    }
+  ]
+} 

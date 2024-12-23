@@ -1,0 +1,361 @@
+openapi: 3.0.0
+info:
+  title: 加班管理系统 - 加班管理 API
+  description: 提供加班申请、审批、查询等相关功能的 API
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: 开发环境
+
+components:
+  schemas:
+    OvertimeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 加班申请ID
+        startTime:
+          type: string
+          format: date-time
+          description: 加班开始时间
+        endTime:
+          type: string
+          format: date-time
+          description: 加班结束时间
+        reason:
+          type: string
+          description: 加班原因
+        status:
+          type: string
+          enum:
+            - PENDING_SUPERVISOR
+            - SUPERVISOR_APPROVED
+            - PENDING_MANAGER
+            - PENDING_CUSTOMER
+            - APPROVED
+            - REJECTED
+            - CANCELLED
+          description: 申请状态
+        workerId:
+          type: string
+          description: 申请人ID
+        workerName:
+          type: string
+          description: 申请人姓名
+        departmentId:
+          type: string
+          description: 部门ID
+        departmentName:
+          type: string
+          description: 部门名称
+        facilityId:
+          type: string
+          description: 场所ID
+        facilityName:
+          type: string
+          description: 场所名称
+        customerId:
+          type: string
+          description: 客户ID
+        customerName:
+          type: string
+          description: 客户名称
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间
+        approvalRecords:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalRecord'
+
+    ApprovalRecord:
+      type: object
+      properties:
+        approverId:
+          type: string
+          description: 审批人ID
+        approverName:
+          type: string
+          description: 审批人姓名
+        role:
+          type: string
+          enum: [WORKER, SUPERVISOR, MANAGER, CUSTOMER, SYSTEM_ADMIN]
+          description: 审批人角色
+        action:
+          type: string
+          enum: [APPROVE, REJECT]
+          description: 审批动作
+        comment:
+          type: string
+          description: 审批意见
+        timestamp:
+          type: string
+          format: date-time
+          description: 审批时间
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 错误代码
+        message:
+          type: string
+          description: 错误信息
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /overtime-requests:
+    post:
+      summary: 创建加班申请
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - startTime
+                - endTime
+                - reason
+              properties:
+                startTime:
+                  type: string
+                  format: date-time
+                  description: 加班开始时间
+                endTime:
+                  type: string
+                  format: date-time
+                  description: 加班结束时间
+                reason:
+                  type: string
+                  description: 加班原因
+                customerId:
+                  type: string
+                  description: 客户ID（可选）
+      responses:
+        '201':
+          description: 加班申请创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OvertimeRequest'
+    get:
+      summary: 查询加班申请列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: workerId
+          in: query
+          schema:
+            type: string
+          description: 按申请人ID筛选
+        - name: departmentId
+          in: query
+          schema:
+            type: string
+          description: 按部门ID筛选
+        - name: facilityId
+          in: query
+          schema:
+            type: string
+          description: 按场所ID筛选
+        - name: customerId
+          in: query
+          schema:
+            type: string
+          description: 按客户ID筛选
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - PENDING_SUPERVISOR
+              - SUPERVISOR_APPROVED
+              - PENDING_MANAGER
+              - PENDING_CUSTOMER
+              - APPROVED
+              - REJECTED
+              - CANCELLED
+          description: 按状态筛选
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: 开始日期
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: 结束日期
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: 页码
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: 每页数量
+      responses:
+        '200':
+          description: 成功获取加班申请列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OvertimeRequest'
+                  total:
+                    type: integer
+                    description: 总记录数
+
+  /overtime-requests/{requestId}:
+    get:
+      summary: 获取加班申请详情
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取加班申请详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OvertimeRequest'
+
+  /overtime-requests/{requestId}/approve:
+    post:
+      summary: 审批通过加班申请
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: 审批意见
+      responses:
+        '200':
+          description: 审批通过成功
+
+  /overtime-requests/{requestId}/reject:
+    post:
+      summary: 驳回加班申请
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - comment
+              properties:
+                comment:
+                  type: string
+                  description: 驳回原因
+      responses:
+        '200':
+          description: 驳回成功
+
+  /overtime-requests/{requestId}/cancel:
+    post:
+      summary: 取消加班申请
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 取消成功
+
+  /overtime-requests/{requestId}/edit:
+    put:
+      summary: 编辑加班申请
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startTime:
+                  type: string
+                  format: date-time
+                  description: 加班开始时间
+                endTime:
+                  type: string
+                  format: date-time
+                  description: 加班结束时间
+                reason:
+                  type: string
+                  description: 加班原因
+                customerId:
+                  type: string
+                  description: 客户ID
+      responses:
+        '200':
+          description: 编辑成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OvertimeRequest' 

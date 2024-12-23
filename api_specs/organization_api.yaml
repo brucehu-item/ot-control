@@ -1,0 +1,321 @@
+openapi: 3.0.0
+info:
+  title: 加班管理系统 - 组织架构 API
+  description: 提供组织架构管理、用户分配等相关功能的 API
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: 开发环境
+
+components:
+  schemas:
+    Facility:
+      type: object
+      properties:
+        facilityId:
+          type: string
+          description: 场所ID
+        name:
+          type: string
+          description: 场所名称
+        managerId:
+          type: string
+          description: 经理ID
+        customerIds:
+          type: array
+          items:
+            type: string
+          description: 客户ID列表
+
+    Department:
+      type: object
+      properties:
+        departmentId:
+          type: string
+          description: 部门ID
+        name:
+          type: string
+          description: 部门名称
+        facilityId:
+          type: string
+          description: 所属场所ID
+        supervisorId:
+          type: string
+          description: 主管ID
+
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: 用户ID
+        username:
+          type: string
+          description: 用户名
+        firstName:
+          type: string
+          description: 名字
+        lastName:
+          type: string
+          description: 姓氏
+        role:
+          type: string
+          enum: [WORKER, SUPERVISOR, MANAGER, CUSTOMER, SYSTEM_ADMIN]
+          description: 用户角色
+        departmentId:
+          type: string
+          description: 所属部门ID
+        facilityId:
+          type: string
+          description: 所属场所ID
+        hasApprovalAuthority:
+          type: boolean
+          description: 是否有审批权限
+        requiresApproval:
+          type: boolean
+          description: 是否需要审批
+
+    OrganizationInfo:
+      type: object
+      properties:
+        facilityId:
+          type: string
+          description: 场所ID
+        facilityName:
+          type: string
+          description: 场所名称
+        departmentId:
+          type: string
+          description: 部门ID
+        departmentName:
+          type: string
+          description: 部门名称
+        supervisorId:
+          type: string
+          description: 主管ID
+        supervisorName:
+          type: string
+          description: 主管名称
+        managerId:
+          type: string
+          description: 经理ID
+        managerName:
+          type: string
+          description: 经理名称
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 错误代码
+        message:
+          type: string
+          description: 错误信息
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /facilities:
+    get:
+      summary: 获取场所列表
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取场所列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Facility'
+    post:
+      summary: 创建新场所
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - managerId
+              properties:
+                name:
+                  type: string
+                  description: 场所名称
+                managerId:
+                  type: string
+                  description: 经理ID
+      responses:
+        '201':
+          description: 场所创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Facility'
+
+  /facilities/{facilityId}:
+    get:
+      summary: 获取场所详情
+      parameters:
+        - name: facilityId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取场所详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Facility'
+
+  /facilities/{facilityId}/customers:
+    get:
+      summary: 获取场所的客户列表
+      parameters:
+        - name: facilityId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取客户列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /departments:
+    get:
+      summary: 获取部门列表
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: facilityId
+          in: query
+          schema:
+            type: string
+          description: 按场所ID筛选
+      responses:
+        '200':
+          description: 成功获取部门列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+    post:
+      summary: 创建新部门
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - facilityId
+                - supervisorId
+              properties:
+                name:
+                  type: string
+                  description: 部门名称
+                facilityId:
+                  type: string
+                  description: 所属场所ID
+                supervisorId:
+                  type: string
+                  description: 主管ID
+      responses:
+        '201':
+          description: 部门创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+
+  /departments/{departmentId}:
+    get:
+      summary: 获取部门详情
+      parameters:
+        - name: departmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取部门详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+
+  /users/{userId}/organization:
+    get:
+      summary: 获取用户的组织信息
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 成功获取用户组织信息
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInfo'
+
+  /users/assignments:
+    post:
+      summary: 分配用户
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  description: 用户ID
+                departmentId:
+                  type: string
+                  description: 部门ID
+                facilityId:
+                  type: string
+                  description: 场所ID
+      responses:
+        '200':
+          description: 用户分配成功 

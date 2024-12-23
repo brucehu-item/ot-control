@@ -1,0 +1,1 @@
+阅读domain_analysis目录下的领域分析文档，针对每个限界上下文，生成符合openapi规范的api文档。放置于api_specs目录下。

@@ -1,0 +1,391 @@
+{
+  "overtimeRequests": [
+    {
+      "id": "OT001",
+      "startTime": "2023-12-22T18:00:00Z",
+      "endTime": "2023-12-22T22:00:00Z",
+      "reason": "赶制订单",
+      "status": "PENDING_SUPERVISOR",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-22T09:00:00Z",
+      "updatedAt": "2023-12-22T09:00:00Z",
+      "approvalRecords": []
+    },
+    {
+      "id": "OT002",
+      "startTime": "2023-12-21T18:00:00Z",
+      "endTime": "2023-12-21T22:00:00Z",
+      "reason": "设备维护",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-21T09:00:00Z",
+      "updatedAt": "2023-12-21T16:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，设备维护必须完成",
+          "timestamp": "2023-12-21T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "确认加班，维护工作要及时完成",
+          "timestamp": "2023-12-21T16:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT003",
+      "startTime": "2023-12-20T18:00:00Z",
+      "endTime": "2023-12-20T23:00:00Z",
+      "reason": "质量检查",
+      "status": "PENDING_MANAGER",
+      "workerId": "W002",
+      "workerName": "李小红",
+      "departmentId": "D002",
+      "departmentName": "质检部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-20T09:00:00Z",
+      "updatedAt": "2023-12-20T11:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S002",
+          "approverName": "赵建军",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，需要完成今日质检任务",
+          "timestamp": "2023-12-20T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，质检工作要按时完成",
+          "timestamp": "2023-12-20T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT004",
+      "startTime": "2023-12-19T18:00:00Z",
+      "endTime": "2023-12-19T20:00:00Z",
+      "reason": "产品抽检",
+      "status": "REJECTED",
+      "workerId": "W002",
+      "workerName": "李小红",
+      "departmentId": "D002",
+      "departmentName": "质检部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-19T09:00:00Z",
+      "updatedAt": "2023-12-19T14:30:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S002",
+          "approverName": "赵建军",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，需要完成抽检工作",
+          "timestamp": "2023-12-19T10:30:00Z"
+        },
+        {
+          "approverId": "M001",
+          "approverName": "刘志强",
+          "role": "MANAGER",
+          "action": "REJECT",
+          "comment": "当前人手充足，抽检工作可以分配给其他人",
+          "timestamp": "2023-12-19T14:30:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT005",
+      "startTime": "2023-12-18T18:00:00Z",
+      "endTime": "2023-12-18T21:00:00Z",
+      "reason": "生产线维护",
+      "status": "SUPERVISOR_APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-18T09:00:00Z",
+      "updatedAt": "2023-12-18T10:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，维护工作必须今天完成",
+          "timestamp": "2023-12-18T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT006",
+      "startTime": "2023-12-17T18:00:00Z",
+      "endTime": "2023-12-17T22:00:00Z",
+      "reason": "特殊批次质检",
+      "status": "SUPERVISOR_APPROVED",
+      "workerId": "W002",
+      "workerName": "李小红",
+      "departmentId": "D002",
+      "departmentName": "质检部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-17T09:00:00Z",
+      "updatedAt": "2023-12-17T10:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S002",
+          "approverName": "赵建军",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，特殊批次需要今天完成",
+          "timestamp": "2023-12-17T10:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT007",
+      "startTime": "2023-12-16T18:00:00Z",
+      "endTime": "2023-12-16T23:00:00Z",
+      "reason": "月末盘点",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-16T09:00:00Z",
+      "updatedAt": "2023-12-16T20:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，月末盘点必须完成",
+          "timestamp": "2023-12-16T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，盘点工作要准确完成",
+          "timestamp": "2023-12-16T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT008",
+      "startTime": "2023-12-15T18:00:00Z",
+      "endTime": "2023-12-15T21:00:00Z",
+      "reason": "生产线调试",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-15T09:00:00Z",
+      "updatedAt": "2023-12-15T19:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，生产线调试很重要",
+          "timestamp": "2023-12-15T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，调试工作要仔细完成",
+          "timestamp": "2023-12-15T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT009",
+      "startTime": "2023-12-14T18:00:00Z",
+      "endTime": "2023-12-14T22:00:00Z",
+      "reason": "紧急订单处理",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-14T09:00:00Z",
+      "updatedAt": "2023-12-14T19:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，紧急订单需要处理",
+          "timestamp": "2023-12-14T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，订单必须按时完成",
+          "timestamp": "2023-12-14T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT010",
+      "startTime": "2023-12-13T18:00:00Z",
+      "endTime": "2023-12-13T23:00:00Z",
+      "reason": "设备年度保养",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-13T09:00:00Z",
+      "updatedAt": "2023-12-13T20:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，年度保养工作重要",
+          "timestamp": "2023-12-13T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，保养工作要认真完成",
+          "timestamp": "2023-12-13T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT011",
+      "startTime": "2023-12-12T18:00:00Z",
+      "endTime": "2023-12-12T21:00:00Z",
+      "reason": "库存清点",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-12T09:00:00Z",
+      "updatedAt": "2023-12-12T19:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，库存清点要及时",
+          "timestamp": "2023-12-12T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，清点工作要准确",
+          "timestamp": "2023-12-12T11:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "OT012",
+      "startTime": "2023-12-11T18:00:00Z",
+      "endTime": "2023-12-11T22:00:00Z",
+      "reason": "新设备安装",
+      "status": "APPROVED",
+      "workerId": "W001",
+      "workerName": "张小明",
+      "departmentId": "D001",
+      "departmentName": "生产部",
+      "facilityId": "F001",
+      "facilityName": "第一工厂",
+      "customerId": "C001",
+      "customerName": "陈明月",
+      "createdAt": "2023-12-11T09:00:00Z",
+      "updatedAt": "2023-12-11T19:00:00Z",
+      "approvalRecords": [
+        {
+          "approverId": "S001",
+          "approverName": "王建国",
+          "role": "SUPERVISOR",
+          "action": "APPROVE",
+          "comment": "同意加班申请，新设备需要尽快安装",
+          "timestamp": "2023-12-11T10:00:00Z"
+        },
+        {
+          "approverId": "C001",
+          "approverName": "陈明月",
+          "role": "CUSTOMER",
+          "action": "APPROVE",
+          "comment": "同意加班，安装工作要按规范完成",
+          "timestamp": "2023-12-11T11:00:00Z"
+        }
+      ]
+    }
+  ]
+} 

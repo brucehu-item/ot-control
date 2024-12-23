@@ -1,0 +1,24 @@
+{
+  "facilities": [
+    {
+      "facilityId": "F001",
+      "name": "第一工厂",
+      "managerId": "M001",
+      "customerIds": ["C001"]
+    }
+  ],
+  "departments": [
+    {
+      "departmentId": "D001",
+      "name": "生产部",
+      "facilityId": "F001",
+      "supervisorId": "S001"
+    },
+    {
+      "departmentId": "D002",
+      "name": "质检部",
+      "facilityId": "F001",
+      "supervisorId": "S002"
+    }
+  ]
+} 
