@@ -31,3 +31,5 @@ VITE v4.5.5  ready in 573 ms
 ```
 
 现在你可以在浏览器中访问 http://localhost:5173/ 来查看项目了。
+
+构建成功后使用mock_data/users.json文件里的用户的username和password登录
