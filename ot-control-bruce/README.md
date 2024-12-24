@@ -1,27 +1,27 @@
-# `ot-control-bruce` 项目本地运行指南
+# Local Development Guide for `ot-control-bruce` Project
 
-## 环境准备
-1. 安装 Node.js
-   - 版本要求：18+
-   - 推荐使用 [nvm](https://github.com/nvm-sh/nvm) 来管理 Node.js 版本
+## Environment Setup
+1. Install Node.js
+   - Version requirement: 18+
+   - Recommended to use [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions
 
-## 运行步骤
-1. 打开终端
-2. 进入项目目录：
+## Running Steps
+1. Open terminal
+2. Navigate to project directory:
    ```bash
    cd ot-control-bruce
    ```
-3. 安装依赖：
+3. Install dependencies:
    ```bash
    npm install
    ```
-4. 启动开发服务器：
+4. Start development server:
    ```bash
    npm run dev
    ```
 
-## 访问项目
-启动成功后，你会看到如下输出：
+## Accessing the Project
+After successful startup, you will see the following output:
 ```bash
 VITE v4.5.5  ready in 573 ms
 
@@ -30,6 +30,6 @@ VITE v4.5.5  ready in 573 ms
 ➜  press h to show help
 ```
 
-现在你可以在浏览器中访问 http://localhost:5173/ 来查看项目了。
+Now you can visit http://localhost:5173/ in your browser to view the project.
 
-构建成功后使用mock_data/users.json文件里的用户的username和password登录
+After successful build, use the username and password from mock_data/users.json file to log in

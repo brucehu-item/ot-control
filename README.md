@@ -1,67 +1,67 @@
-# OT-Control 前端项目构建方法论
+# OT-Control Frontend Project Building Methodology
 
-## ⚠️ 重要提示
+## ⚠️ Important Notice
 
-重要的事情说3遍，唯一重要的事情说300遍：
+Important things need to be said 3 times, the only important thing needs to be said 300 times:
 
-当你使用AI完成了一个步骤之后，一定要花费精力去和AI生成的结果对齐，确保生成的内容是符合你预期的。不对齐的结果是后续的步骤会基于前面错误的结果持续进行，导致你得花费更多的时间去修正。🔁 x300
+When you complete a step using AI, you must spend effort to align with the AI-generated results and ensure the generated content meets your expectations. Misaligned results will cause subsequent steps to continue based on previous incorrect results, forcing you to spend more time making corrections. 🔁 x300
 
-## 📖 项目简介
+## 📖 Project Introduction
 
-这个项目描述了一个框架逻辑，用于实现从需求文档到前端代码的完整实现。整个过程涉及多个步骤，每个步骤都使用特定的prompt来指导AI完成。
+This project describes a framework logic for implementing complete frontend code from requirement documents. The entire process involves multiple steps, with each step using specific prompts to guide AI completion.
 
-目前这套方法论可以帮助完成构建一个前端项目80%-85%的工作量。框架结构和每个步骤的提示词都还有优化空间，这将是一个不断迭代的过程。
+Currently, this methodology can help complete 80%-85% of the work in building a frontend project. The framework structure and prompts for each step still have room for optimization, which will be an ongoing iterative process.
 
-已实现的项目：
-- `ot-control-bruce`：使用此方法论构建的完整前端项目，实现了需求文档中的绝大多数功能
-- `ot-control-init`：空项目模板，供需要尝试这套方法论的人使用
+Implemented projects:
+- `ot-control-bruce`: A complete frontend project built using this methodology, implementing most of the functionalities in the requirement document
+- `ot-control-init`: Empty project template for those who want to try this methodology
 
-## 🗂️ 项目结构
+## 🗂️ Project Structure
 
 ```
 ot-control-web/
-├── 🏭 ot-control-bruce/  Bruce按照方法论实现加班管理系统的前端项目目录
-├── 📝 docs/              一些补充性的文档目录
-├── 🎯 api_specs/         API接口说明书，前后端的"合同"
-├── 🧩 domain_analysis/   领域分析文档，通往代码实现的桥梁
-├── 🎨 design_guideline/  设计规范指南，包含前端和API的规范
-├── 📊 page_analysis/     页面分析文档, 每个前端页面的实现说明书
-├── 🤖 prompt/            AI提示词相关文档
-├── 🎭 mock_data/         模拟数据，可以让前端独立于后端进行测试
-├── 🌱 ot-control-init/   初始化项目工程，供需要使用这套方法论的人使用
-├── 📋 requirement.md     需求文档
-└── 📚 user_stories.md    用户故事文档
+├── 🏭 ot-control-bruce/  Bruce's frontend project directory for overtime management system
+├── 📝 docs/              Supplementary documentation directory
+├── 🎯 api_specs/         API specification documents, the "contract" between frontend and backend
+├── 🧩 domain_analysis/   Domain analysis documents, the bridge to code implementation
+├── 🎨 design_guideline/  Design specification guide, including frontend and API standards
+├── 📊 page_analysis/     Page analysis documents, implementation specifications for each frontend page
+├── 🤖 prompt/            AI prompt-related documents
+├── 🎭 mock_data/         Mock data for frontend testing independent of backend
+├── 🌱 ot-control-init/   Initial project template for those who want to use this methodology
+├── 📋 requirement.md     Requirement document
+└── 📚 user_stories.md    User stories document
 ```
 
-## 🚀 构建步骤
+## 🚀 Building Steps
 
-1. **项目初始化**
-   - 根据选择的技术栈生成空项目结构
-   - 可选技术栈：
-     - 前端构建工具: vite
-     - 组件库: element-plus
-     - 状态管理: pinia
-     - 路由: vue-router
-     - 请求: axios
-     - 其他
-   - 或直接使用提供的 `ot-control-init` 项目模板
+1. **Project Initialization**
+   - Generate empty project structure based on chosen tech stack
+   - Available tech stack:
+     - Frontend build tool: vite
+     - Component library: element-plus
+     - State management: pinia
+     - Router: vue-router
+     - HTTP client: axios
+     - Others
+   - Or directly use the provided `ot-control-init` project template
 
-2. **领域分析与设计**
-   - 使用 `prompt/1_domain_analysis_prompt.md` 生成领域建模设计
-   - 使用 `prompt/2_user_story_prompt.md` 生成用户故事
+2. **Domain Analysis and Design**
+   - Use `prompt/1_domain_analysis_prompt.md` to generate domain modeling design
+   - Use `prompt/2_user_story_prompt.md` to generate user stories
 
-3. **API设计与实现**
-   - 使用 `prompt/3_build_api_specs_prompt.md` 生成API文档
-   - 使用 `prompt/6_develop_api_prompt.md` 实现API（包含真实和mock两套实现）
+3. **API Design and Implementation**
+   - Use `prompt/3_build_api_specs_prompt.md` to generate API documentation
+   - Use `prompt/6_develop_api_prompt.md` to implement APIs (including both real and mock implementations)
 
-4. **页面设计与实现**
-   - 使用 `prompt/4_build_page_guideline_prompt.md` 生成页面设计规范
-   - 使用 `prompt/5_build_mock_data_prompt.md` 生成Mock数据
-   - 使用 `prompt/7_build_page_prompt.md` 实现具体页面
+4. **Page Design and Implementation**
+   - Use `prompt/4_build_page_guideline_prompt.md` to generate page design specifications
+   - Use `prompt/5_build_mock_data_prompt.md` to generate mock data
+   - Use `prompt/7_build_page_prompt.md` to implement specific pages
 
-5. **调试优化**
-   - 根据错误信息让AI调整实现
+5. **Debugging and Optimization**
+   - Adjust implementation based on error messages using AI
 
-## 🔍 本地运行
+## 🔍 Local Development
 
-如果你想在本地运行 `ot-control-bruce` 项目，请参考 `ot-control-bruce/README.md`
+If you want to run the `ot-control-bruce` project locally, please refer to `ot-control-bruce/README.md`
