@@ -12,9 +12,13 @@ This project describes a framework logic for implementing complete frontend code
 
 Currently, this methodology can help complete 80%-85% of the work in building a frontend project. The framework structure and prompts for each step still have room for optimization, which will be an ongoing iterative process.
 
-Implemented projects:
-- `ot-control-bruce`: A complete frontend project built using this methodology, implementing most of the functionalities in the requirement document
-- `ot-control-init`: Empty project template for those who want to try this methodology
+## 🚀 Implemented Projects
+
+### `ot-control-bruce`
+A complete frontend project built using this methodology, implementing most of the functionalities in the requirement document.
+
+### `ot-control-init`
+Empty project template for those who want to try this methodology.
 
 ## 🗂️ Project Structure
 
