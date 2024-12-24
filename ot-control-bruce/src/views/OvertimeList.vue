@@ -388,38 +388,38 @@ onMounted(async () => {
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="id" :label="t('overtime.list.table.id')" width="120" />
-        <el-table-column prop="workerName" :label="t('overtime.list.table.worker')" width="120">
+        <el-table-column prop="id" :label="t('overtime.list.table.id')" min-width="120" />
+        <el-table-column prop="workerName" :label="t('overtime.list.table.worker')" min-width="120">
           <template #default="{ row }">
             {{ row.workerName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="departmentName" :label="t('overtime.list.table.department')" width="150">
+        <el-table-column prop="departmentName" :label="t('overtime.list.table.department')" min-width="150">
           <template #default="{ row }">
             {{ row.departmentName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="facilityName" :label="t('overtime.list.table.facility')" width="150">
+        <el-table-column prop="facilityName" :label="t('overtime.list.table.facility')" min-width="150">
           <template #default="{ row }">
             {{ row.facilityName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" :label="t('overtime.list.table.startTime')" width="180">
+        <el-table-column prop="startTime" :label="t('overtime.list.table.startTime')" min-width="180">
           <template #default="{ row }">
             {{ new Date(row.startTime).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" :label="t('overtime.list.table.endTime')" width="180">
+        <el-table-column prop="endTime" :label="t('overtime.list.table.endTime')" min-width="180">
           <template #default="{ row }">
             {{ new Date(row.endTime).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="duration" :label="t('overtime.list.table.duration')" width="120">
+        <el-table-column prop="duration" :label="t('overtime.list.table.duration')" min-width="120">
           <template #default="{ row }">
             {{ ((new Date(row.endTime) - new Date(row.startTime)) / (1000 * 60 * 60)).toFixed(1) }}{{ t('overtime.list.table.hour') }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" :label="t('overtime.list.table.status')" width="120">
+        <el-table-column prop="status" :label="t('overtime.list.table.status')" min-width="150">
           <template #default="{ row }">
             <el-tag
               :type="row.status === 'APPROVED' ? 'success' :
@@ -432,12 +432,12 @@ onMounted(async () => {
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" :label="t('overtime.list.table.createdAt')" width="180">
+        <el-table-column prop="createdAt" :label="t('overtime.list.table.createdAt')" min-width="180">
           <template #default="{ row }">
             {{ new Date(row.createdAt).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column :label="t('overtime.list.table.operation')" width="200" fixed="right">
+        <el-table-column :label="t('overtime.list.table.operation')" min-width="200" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">{{ t('overtime.list.action.view') }}</el-button>
             <el-button
@@ -571,6 +571,8 @@ onMounted(async () => {
   padding: 12px;
   background-color: #F5F7FA;
   min-height: calc(100vh - 60px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .page-header {
@@ -578,6 +580,8 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .page-header h2 {
@@ -591,12 +595,14 @@ onMounted(async () => {
   margin-bottom: 12px;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
 .table-area {
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
 .pagination {
@@ -784,5 +790,71 @@ onMounted(async () => {
 :deep(.el-form-item__content span) {
   line-height: 32px;
   color: #606266;
+}
+
+:deep(.el-form--inline) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+:deep(.el-form--inline .el-form-item) {
+  margin-right: 0;
+  margin-bottom: 12px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+:deep(.el-table) {
+  width: 100% !important;
+}
+
+:deep(.el-table__body-wrapper) {
+  overflow-x: auto;
+}
+
+:deep(.el-tag) {
+  white-space: normal;
+  height: auto;
+  min-height: 22px;
+  line-height: 1.4;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .overtime-record {
+    padding: 8px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  :deep(.el-form--inline) {
+    flex-direction: column;
+  }
+
+  :deep(.el-form--inline .el-form-item) {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  :deep(.el-dialog) {
+    width: 90% !important;
+    margin: 10vh auto !important;
+  }
+
+  :deep(.el-form-item__label) {
+    float: none;
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+  }
+
+  :deep(.el-dialog__body) {
+    padding: 12px;
+  }
 }
 </style> 
