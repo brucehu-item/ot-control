@@ -3,7 +3,9 @@ import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { api } from '@/api/api-config'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 
 // 表单数据
@@ -17,17 +19,17 @@ const form = ref({
 // 表单规则
 const rules = {
   startTime: [
-    { required: true, message: '请选择开始时间', trigger: 'change' }
+    { required: true, message: t('overtime.create.validation.startTime'), trigger: 'change' }
   ],
   endTime: [
-    { required: true, message: '请选择结束时间', trigger: 'change' }
+    { required: true, message: t('overtime.create.validation.endTime'), trigger: 'change' }
   ],
   reason: [
-    { required: true, message: '请输入加班原因', trigger: 'blur' },
-    { min: 5, max: 200, message: '加班原因长度应在 5 到 200 个字符之间', trigger: 'blur' }
+    { required: true, message: t('overtime.create.validation.reason'), trigger: 'blur' },
+    { min: 5, max: 200, message: t('overtime.create.validation.reasonLength'), trigger: 'blur' }
   ],
   customerId: [
-    { required: true, message: '请选择客户', trigger: 'change' }
+    { required: true, message: t('overtime.create.validation.customer'), trigger: 'change' }
   ]
 }
 
@@ -95,7 +97,7 @@ const fetchUserInfo = async () => {
     return updatedUserInfo
   } catch (error) {
     console.error('获取用户信息失败：', error)
-    ElMessage.error('获取用户信息失败')
+    ElMessage.error(t('overtime.create.message.noUserInfo'))
     // 如果获取用户信息失败，可能是 token 过期，跳转到登录页
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
@@ -108,7 +110,7 @@ const fetchCustomers = async () => {
   try {
     const userInfo = await fetchUserInfo()
     if (!userInfo?.facilityId) {
-      throw new Error('未找到用户所属场所')
+      throw new Error(t('overtime.create.message.noFacility'))
     }
     
     const customers = await api.organization.getFacilityCustomers(userInfo.facilityId)
@@ -118,7 +120,7 @@ const fetchCustomers = async () => {
     }))
   } catch (error) {
     console.error('获取客户列表失败：', error)
-    ElMessage.error(error.message || '获取客户列表失败')
+    ElMessage.error(error.message || t('overtime.create.message.fetchCustomerError'))
   }
 }
 
@@ -130,7 +132,7 @@ const submitForm = async () => {
     if (valid) {
       try {
         if (!currentUser.value) {
-          throw new Error('未获取到用户信息')
+          throw new Error(t('overtime.create.message.noUserInfo'))
         }
 
         await api.overtime.createOvertimeRequest({
@@ -148,11 +150,11 @@ const submitForm = async () => {
           facilityId: currentUser.value.facilityId,
           facilityName: currentUser.value.facilityName || '' // 如果后端返回的用户信息中没有场所名称，需要额外获取
         })
-        ElMessage.success('加班申请提交成功')
+        ElMessage.success(t('overtime.create.message.submitSuccess'))
         router.push('/overtime')
       } catch (error) {
         console.error('提交加班申请失败：', error)
-        ElMessage.error(error.message || '提交加班申请失败')
+        ElMessage.error(error.message || t('overtime.create.message.submitError'))
       }
     }
   })
@@ -192,7 +194,7 @@ const disabledTime = (date) => {
 const handleStartTimeChange = (val) => {
   if (form.value.endTime && new Date(val) > new Date(form.value.endTime)) {
     form.value.endTime = ''
-    ElMessage.warning('结束时间不能早于开始时间')
+    ElMessage.warning(t('overtime.create.validation.endTimeBeforeStart'))
   }
 }
 
@@ -200,7 +202,7 @@ const handleStartTimeChange = (val) => {
 const handleEndTimeChange = (val) => {
   if (form.value.startTime && new Date(val) < new Date(form.value.startTime)) {
     form.value.endTime = ''
-    ElMessage.warning('结束时间不能早于开始时间')
+    ElMessage.warning(t('overtime.create.validation.endTimeBeforeStart'))
   }
 }
 
@@ -212,7 +214,7 @@ onMounted(async () => {
 <template>
   <div class="overtime-create">
     <div class="page-header">
-      <h2>新建加班申请</h2>
+      <h2>{{ t('overtime.create.title') }}</h2>
     </div>
     
     <el-card class="form-card">
@@ -223,11 +225,11 @@ onMounted(async () => {
         label-width="100px"
         label-position="right"
       >
-        <el-form-item label="开始时间" prop="startTime">
+        <el-form-item :label="t('overtime.create.form.startTime')" prop="startTime">
           <el-date-picker
             v-model="form.startTime"
             type="datetime"
-            placeholder="选择开始时间"
+            :placeholder="t('overtime.create.form.startTimePlaceholder')"
             format="YYYY-MM-DD HH:mm"
             value-format="YYYY-MM-DD HH:mm:ss"
             :disabled-date="disabledDate"
@@ -236,11 +238,11 @@ onMounted(async () => {
           />
         </el-form-item>
         
-        <el-form-item label="结束时间" prop="endTime">
+        <el-form-item :label="t('overtime.create.form.endTime')" prop="endTime">
           <el-date-picker
             v-model="form.endTime"
             type="datetime"
-            placeholder="选择结束时间"
+            :placeholder="t('overtime.create.form.endTimePlaceholder')"
             format="YYYY-MM-DD HH:mm"
             value-format="YYYY-MM-DD HH:mm:ss"
             :disabled-date="disabledDate"
@@ -249,10 +251,10 @@ onMounted(async () => {
           />
         </el-form-item>
         
-        <el-form-item label="客户" prop="customerId">
+        <el-form-item :label="t('overtime.create.form.customer')" prop="customerId">
           <el-select
             v-model="form.customerId"
-            placeholder="请选择客户"
+            :placeholder="t('overtime.create.form.customerPlaceholder')"
             clearable
             style="width: 100%"
           >
@@ -265,18 +267,18 @@ onMounted(async () => {
           </el-select>
         </el-form-item>
         
-        <el-form-item label="加班原因" prop="reason">
+        <el-form-item :label="t('overtime.create.form.reason')" prop="reason">
           <el-input
             v-model="form.reason"
             type="textarea"
             :rows="4"
-            placeholder="请输入加班原因（5-200字）"
+            :placeholder="t('overtime.create.form.reasonPlaceholder')"
           />
         </el-form-item>
         
         <el-form-item>
-          <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="cancel">取消</el-button>
+          <el-button type="primary" @click="submitForm">{{ t('common.submit') }}</el-button>
+          <el-button @click="cancel">{{ t('common.cancel') }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>

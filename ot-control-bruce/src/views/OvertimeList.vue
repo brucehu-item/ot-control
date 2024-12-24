@@ -3,8 +3,9 @@ import { ref, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { api } from '../api/api-config'
+import { useI18n } from 'vue-i18n'
 
-// 路由实例
+const { t } = useI18n()
 const router = useRouter()
 
 // 搜索条件
@@ -34,13 +35,13 @@ const currentDetail = ref(null)
 
 // 状态选项
 const statusOptions = [
-  { label: '待主管审批', value: 'PENDING_SUPERVISOR' },
-  { label: '主管已通过', value: 'SUPERVISOR_APPROVED' },
-  { label: '待经理审批', value: 'PENDING_MANAGER' },
-  { label: '待客户审批', value: 'PENDING_CUSTOMER' },
-  { label: '已通过', value: 'APPROVED' },
-  { label: '已拒绝', value: 'REJECTED' },
-  { label: '已取消', value: 'CANCELLED' }
+  { label: t('overtime.list.status.PENDING_SUPERVISOR'), value: 'PENDING_SUPERVISOR' },
+  { label: t('overtime.list.status.SUPERVISOR_APPROVED'), value: 'SUPERVISOR_APPROVED' },
+  { label: t('overtime.list.status.PENDING_MANAGER'), value: 'PENDING_MANAGER' },
+  { label: t('overtime.list.status.PENDING_CUSTOMER'), value: 'PENDING_CUSTOMER' },
+  { label: t('overtime.list.status.APPROVED'), value: 'APPROVED' },
+  { label: t('overtime.list.status.REJECTED'), value: 'REJECTED' },
+  { label: t('overtime.list.status.CANCELLED'), value: 'CANCELLED' }
 ]
 
 // 获取当前用户信息
@@ -116,13 +117,13 @@ const handleApproval = async () => {
         comment: approvalForm.value.comment
       })
     }
-    ElMessage.success('审批成功')
+    ElMessage.success(t('overtime.list.dialog.approval.success'))
     approvalVisible.value = false
     approvalForm.value = { action: 'APPROVE', comment: '' }
     fetchData()
   } catch (error) {
     console.error('审批失败：', error)
-    ElMessage.error(error.message || '审批失败')
+    ElMessage.error(error.message || t('overtime.list.dialog.approval.error'))
   }
 }
 
@@ -241,10 +242,10 @@ const showDetail = (row) => {
 const handleCancel = async (id) => {
   try {
     await api.overtime.cancelOvertimeRequest(id)
-    ElMessage.success('取消申请成功')
+    ElMessage.success(t('overtime.list.message.cancelSuccess'))
     fetchData()
   } catch (error) {
-    ElMessage.error('取消申请失败')
+    ElMessage.error(t('overtime.list.message.cancelError'))
   }
 }
 
@@ -297,42 +298,42 @@ onMounted(async () => {
   <div class="overtime-record">
     <!-- 页面标题 -->
     <div class="page-header">
-      <h2>加班记录</h2>
+      <h2>{{ t('overtime.list.title') }}</h2>
       <el-button 
         v-if="currentUser?.role === 'WORKER'"
         type="primary" 
         @click="createRequest"
       >
-        新建加班申请
+        {{ t('overtime.create.title') }}
       </el-button>
     </div>
 
     <!-- 搜索区域 -->
     <el-card class="search-area">
       <el-form :model="searchForm" inline>
-        <el-form-item label="时间范围">
+        <el-form-item :label="t('overtime.list.search.startDate')">
           <el-date-picker
             v-model="searchForm.startDate"
             v-model:end="searchForm.endDate"
             type="daterange"
             range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :start-placeholder="t('overtime.list.search.startDate')"
+            :end-placeholder="t('overtime.list.search.endDate')"
             value-format="YYYY-MM-DD"
             :shortcuts="[
-              { text: '最近一周', value: () => {
+              { text: t('overtime.list.search.lastWeek'), value: () => {
                 const end = new Date()
                 const start = new Date()
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
                 return [start, end]
               }},
-              { text: '最近一月', value: () => {
+              { text: t('overtime.list.search.lastMonth'), value: () => {
                 const end = new Date()
                 const start = new Date()
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
                 return [start, end]
               }},
-              { text: '最近三月', value: () => {
+              { text: t('overtime.list.search.lastThreeMonths'), value: () => {
                 const end = new Date()
                 const start = new Date()
                 start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
@@ -341,10 +342,10 @@ onMounted(async () => {
             ]"
           />
         </el-form-item>
-        <el-form-item label="申请状态">
+        <el-form-item :label="t('overtime.list.search.status')">
           <el-select
             v-model="searchForm.status"
-            placeholder="请选择状态"
+            :placeholder="t('overtime.list.search.status')"
             clearable
             style="width: 160px"
           >
@@ -358,10 +359,10 @@ onMounted(async () => {
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="currentUser?.role === 'MANAGER'" label="部门">
+        <el-form-item v-if="currentUser?.role === 'MANAGER'" :label="t('overtime.list.search.department')">
           <el-select
             v-model="searchForm.departmentId"
-            placeholder="请选择部门"
+            :placeholder="t('overtime.list.search.department')"
             clearable
             style="width: 160px"
           >
@@ -373,8 +374,8 @@ onMounted(async () => {
             />
           </el-select>
         </el-form-item>
-        <el-button type="primary" @click="fetchData">搜索</el-button>
-        <el-button @click="resetSearch">重置</el-button>
+        <el-button type="primary" @click="fetchData">{{ t('common.search') }}</el-button>
+        <el-button @click="resetSearch">{{ t('common.reset') }}</el-button>
       </el-form>
     </el-card>
 
@@ -387,38 +388,38 @@ onMounted(async () => {
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="id" label="申请编号" width="120" />
-        <el-table-column prop="workerName" label="申请人" width="120">
+        <el-table-column prop="id" :label="t('overtime.list.table.id')" width="120" />
+        <el-table-column prop="workerName" :label="t('overtime.list.table.worker')" width="120">
           <template #default="{ row }">
             {{ row.workerName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="departmentName" label="部门" width="150">
+        <el-table-column prop="departmentName" :label="t('overtime.list.table.department')" width="150">
           <template #default="{ row }">
             {{ row.departmentName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="facilityName" label="场所" width="150">
+        <el-table-column prop="facilityName" :label="t('overtime.list.table.facility')" width="150">
           <template #default="{ row }">
             {{ row.facilityName || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="startTime" label="开始时间" width="180">
+        <el-table-column prop="startTime" :label="t('overtime.list.table.startTime')" width="180">
           <template #default="{ row }">
             {{ new Date(row.startTime).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="endTime" label="结束时间" width="180">
+        <el-table-column prop="endTime" :label="t('overtime.list.table.endTime')" width="180">
           <template #default="{ row }">
             {{ new Date(row.endTime).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column prop="duration" label="加班时长(小时)" width="120">
+        <el-table-column prop="duration" :label="t('overtime.list.table.duration')" width="120">
           <template #default="{ row }">
-            {{ ((new Date(row.endTime) - new Date(row.startTime)) / (1000 * 60 * 60)).toFixed(1) }}
+            {{ ((new Date(row.endTime) - new Date(row.startTime)) / (1000 * 60 * 60)).toFixed(1) }}{{ t('overtime.list.table.hour') }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="120">
+        <el-table-column prop="status" :label="t('overtime.list.table.status')" width="120">
           <template #default="{ row }">
             <el-tag
               :type="row.status === 'APPROVED' ? 'success' :
@@ -427,25 +428,25 @@ onMounted(async () => {
                      row.status === 'PENDING_MANAGER' || row.status === 'PENDING_CUSTOMER' ? 'warning' :
                      row.status === 'REJECTED' ? 'danger' : 'info'"
             >
-              {{ statusOptions.find(item => item.value === row.status)?.label }}
+              {{ t(`overtime.list.status.${row.status}`) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="创建时间" width="180">
+        <el-table-column prop="createdAt" :label="t('overtime.list.table.createdAt')" width="180">
           <template #default="{ row }">
             {{ new Date(row.createdAt).toLocaleString() }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column :label="t('overtime.list.table.operation')" width="200" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="showDetail(row)">查看</el-button>
+            <el-button link type="primary" @click="showDetail(row)">{{ t('overtime.list.action.view') }}</el-button>
             <el-button
               v-if="hasPermissionToCancel(row)"
               link
               type="danger"
               @click="handleCancel(row.id)"
             >
-              取消
+              {{ t('overtime.list.action.cancel') }}
             </el-button>
             <el-button
               v-if="hasPermissionToApprove(row)"
@@ -453,7 +454,7 @@ onMounted(async () => {
               type="success"
               @click="showApproval(row)"
             >
-              审批
+              {{ t('overtime.list.action.approve') }}
             </el-button>
           </template>
         </el-table-column>
@@ -476,16 +477,16 @@ onMounted(async () => {
     <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailVisible"
-      title="加班申请详情"
+      :title="t('overtime.list.dialog.detail.title')"
       width="800px"
     >
       <template v-if="currentDetail">
         <el-descriptions :column="2" border>
-          <el-descriptions-item label="申请编号">{{ currentDetail.id }}</el-descriptions-item>
-          <el-descriptions-item label="申请人">{{ currentDetail.workerName }}</el-descriptions-item>
-          <el-descriptions-item label="部门">{{ currentDetail.departmentName }}</el-descriptions-item>
-          <el-descriptions-item label="场所">{{ currentDetail.facilityName }}</el-descriptions-item>
-          <el-descriptions-item label="状态">
+          <el-descriptions-item :label="t('overtime.list.table.id')">{{ currentDetail.id }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.worker')">{{ currentDetail.workerName }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.department')">{{ currentDetail.departmentName }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.facility')">{{ currentDetail.facilityName }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.status')">
             <el-tag
               :type="currentDetail.status === 'APPROVED' ? 'success' :
                      currentDetail.status === 'PENDING_SUPERVISOR' ? 'primary' :
@@ -493,18 +494,18 @@ onMounted(async () => {
                      currentDetail.status === 'PENDING_MANAGER' || currentDetail.status === 'PENDING_CUSTOMER' ? 'warning' :
                      currentDetail.status === 'REJECTED' ? 'danger' : 'info'"
             >
-              {{ statusOptions.find(item => item.value === currentDetail.status)?.label }}
+              {{ t(`overtime.list.status.${currentDetail.status}`) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="开始时间" :span="2">{{ currentDetail.startTime }}</el-descriptions-item>
-          <el-descriptions-item label="结束时间" :span="2">{{ currentDetail.endTime }}</el-descriptions-item>
-          <el-descriptions-item label="加班时长" :span="2">{{ currentDetail.duration }}小时</el-descriptions-item>
-          <el-descriptions-item label="加班原因" :span="2">{{ currentDetail.reason }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.startTime')" :span="2">{{ currentDetail.startTime }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.endTime')" :span="2">{{ currentDetail.endTime }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.duration')" :span="2">{{ currentDetail.duration }}{{ t('overtime.list.table.hour') }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.reason')" :span="2">{{ currentDetail.reason }}</el-descriptions-item>
         </el-descriptions>
 
         <!-- 审批流程 -->
         <div class="approval-records" v-if="currentDetail">
-          <h3>审批流程</h3>
+          <h3>{{ t('overtime.list.dialog.detail.approvalProcess') }}</h3>
           <el-timeline>
             <el-timeline-item
               v-for="record in currentDetail.approvalRecords"
@@ -513,8 +514,8 @@ onMounted(async () => {
               :timestamp="new Date(record.timestamp).toLocaleString()"
             >
               <h4>{{ record.approverName }} ({{ record.role }})</h4>
-              <p>审批结果：{{ record.action === 'APPROVE' ? '通过' : '拒绝' }}</p>
-              <p>审批意见：{{ record.comment }}</p>
+              <p>{{ t('overtime.list.dialog.detail.approvalResult') }}：{{ record.action === 'APPROVE' ? t('overtime.list.dialog.approval.approve') : t('overtime.list.dialog.approval.reject') }}</p>
+              <p>{{ t('overtime.list.dialog.approval.comment') }}：{{ record.comment }}</p>
             </el-timeline-item>
           </el-timeline>
         </div>
@@ -524,41 +525,41 @@ onMounted(async () => {
     <!-- 审批弹窗 -->
     <el-dialog
       v-model="approvalVisible"
-      title="审批加班申请"
+      :title="t('overtime.list.dialog.approval.title')"
       width="500px"
     >
       <el-form :model="approvalForm" label-width="80px">
-        <el-form-item label="申请人">
+        <el-form-item :label="t('overtime.list.table.worker')">
           <span>{{ currentApprovalRequest?.workerName }}</span>
         </el-form-item>
-        <el-form-item label="开始时间">
+        <el-form-item :label="t('overtime.list.table.startTime')">
           <span>{{ new Date(currentApprovalRequest?.startTime).toLocaleString() }}</span>
         </el-form-item>
-        <el-form-item label="结束时间">
+        <el-form-item :label="t('overtime.list.table.endTime')">
           <span>{{ new Date(currentApprovalRequest?.endTime).toLocaleString() }}</span>
         </el-form-item>
-        <el-form-item label="加班原因">
+        <el-form-item :label="t('overtime.list.table.reason')">
           <span>{{ currentApprovalRequest?.reason }}</span>
         </el-form-item>
-        <el-form-item label="审批结果">
+        <el-form-item :label="t('overtime.list.dialog.approval.action')">
           <el-radio-group v-model="approvalForm.action">
-            <el-radio label="APPROVE">通过</el-radio>
-            <el-radio label="REJECT">拒绝</el-radio>
+            <el-radio label="APPROVE">{{ t('overtime.list.dialog.approval.approve') }}</el-radio>
+            <el-radio label="REJECT">{{ t('overtime.list.dialog.approval.reject') }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="审批意见">
+        <el-form-item :label="t('overtime.list.dialog.approval.comment')">
           <el-input
             v-model="approvalForm.comment"
             type="textarea"
             :rows="3"
-            placeholder="请输入审批意见"
+            :placeholder="t('overtime.list.dialog.approval.commentPlaceholder')"
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="approvalVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleApproval">确定</el-button>
+          <el-button @click="approvalVisible = false">{{ t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="handleApproval">{{ t('common.confirm') }}</el-button>
         </span>
       </template>
     </el-dialog>

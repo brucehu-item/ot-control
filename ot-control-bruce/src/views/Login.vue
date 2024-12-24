@@ -2,10 +2,12 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
+import { User, Lock, ArrowDown } from '@element-plus/icons-vue'
 import { api } from '../api/api-config'
 import { enrichUserInfo } from '../utils/user-utils'
+import { useI18n } from 'vue-i18n'
 
+const { t, locale } = useI18n()
 const router = useRouter()
 
 const loginForm = reactive({
@@ -17,8 +19,13 @@ const loading = ref(false)
 const loginFormRef = ref(null)
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  username: [{ required: true, message: t('login.validation.username'), trigger: 'blur' }],
+  password: [{ required: true, message: t('login.validation.password'), trigger: 'blur' }]
+}
+
+const handleLanguageChange = (lang) => {
+  locale.value = lang
+  localStorage.setItem('language', lang)
 }
 
 const handleLogin = async () => {
@@ -35,12 +42,12 @@ const handleLogin = async () => {
     const { enrichedInfo } = await enrichUserInfo(userInfo)
     localStorage.setItem('userInfo', JSON.stringify(enrichedInfo))
     
-    ElMessage.success('登录成功')
+    ElMessage.success(t('login.success'))
     router.push('/')
   } catch (error) {
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
-    ElMessage.error(error.message || '登录失败')
+    ElMessage.error(error.message || t('login.failure'))
   } finally {
     loading.value = false
   }
@@ -49,9 +56,26 @@ const handleLogin = async () => {
 
 <template>
   <div class="login-container">
+    <div class="language-switch">
+      <el-dropdown @command="handleLanguageChange">
+        <el-button type="text">
+          {{ t('login.language') }}
+          <el-icon class="el-icon--right">
+            <arrow-down />
+          </el-icon>
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="zh">中文</el-dropdown-item>
+            <el-dropdown-item command="en">English</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+
     <div class="login-card">
       <div class="header">
-        <h1 class="title">加班管理系统</h1>
+        <h1 class="title">{{ t('login.title') }}</h1>
       </div>
       
       <el-form
@@ -63,7 +87,7 @@ const handleLogin = async () => {
         <el-form-item prop="username">
           <el-input
             v-model="loginForm.username"
-            placeholder="请输入用户名"
+            :placeholder="t('login.username')"
             :prefix-icon="User"
           />
         </el-form-item>
@@ -72,7 +96,7 @@ const handleLogin = async () => {
           <el-input
             v-model="loginForm.password"
             type="password"
-            placeholder="请输入密码"
+            :placeholder="t('login.password')"
             :prefix-icon="Lock"
             show-password
           />
@@ -85,14 +109,14 @@ const handleLogin = async () => {
             class="login-button"
             @click="handleLogin"
           >
-            登录
+            {{ t('login.loginButton') }}
           </el-button>
         </el-form-item>
       </el-form>
     </div>
     
     <div class="copyright">
-      © 2023 加班管理系统 版权所有
+      {{ t('login.copyright') }}
     </div>
   </div>
 </template>
@@ -105,6 +129,18 @@ const handleLogin = async () => {
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #6B238E 0%, #9B4BC3 100%);
+  position: relative;
+}
+
+.language-switch {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.language-switch :deep(.el-button) {
+  color: white;
+  font-size: 14px;
 }
 
 .login-card {

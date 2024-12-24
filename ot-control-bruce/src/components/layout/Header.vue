@@ -5,7 +5,9 @@ import { ElMessage } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { api } from '../../api/api-config'
 import { enrichUserInfo } from '../../utils/user-utils'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const userInfo = ref(null)
 
@@ -23,7 +25,7 @@ const fetchUserInfo = async () => {
     localStorage.setItem('userInfo', JSON.stringify(enrichedInfo))
   } catch (error) {
     console.error('获取用户信息失败：', error)
-    ElMessage.error('获取用户信息失败')
+    ElMessage.error(t('header.fetchUserError'))
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
     router.push('/login')
@@ -36,10 +38,10 @@ const handleLogout = async () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
     router.push('/login')
-    ElMessage.success('退出登录成功')
+    ElMessage.success(t('header.logoutSuccess'))
   } catch (error) {
     console.error('退出登录失败：', error)
-    ElMessage.error('退出登录失败')
+    ElMessage.error(t('header.logoutError'))
   }
 }
 
@@ -49,32 +51,28 @@ onMounted(fetchUserInfo)
 <template>
   <div class="header">
     <div class="logo">
-      <h1>加班管理系统</h1>
+      <h1>{{ t('header.title') }}</h1>
     </div>
     <div class="user-info" v-if="userInfo">
       <el-dropdown trigger="click">
         <span class="user-info-content">
           <div class="user-details">
             <span class="user-name">{{ userInfo.lastName }}{{ userInfo.firstName }}</span>
-            <span class="user-role">{{ userInfo.role === 'WORKER' ? '工人' :
-                                    userInfo.role === 'SUPERVISOR' ? '主管' :
-                                    userInfo.role === 'MANAGER' ? '经理' :
-                                    userInfo.role === 'CUSTOMER' ? '客户' :
-                                    userInfo.role === 'SYSTEM_ADMIN' ? '系统管理员' : '' }}</span>
+            <span class="user-role">{{ t(`header.role.${userInfo.role}`) }}</span>
           </div>
           <el-icon class="el-icon--right"><arrow-down /></el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item disabled>
-              <span class="dropdown-label">部门：</span>
-              {{ userInfo.departmentName || '无' }}
+              <span class="dropdown-label">{{ t('header.department') }}：</span>
+              {{ userInfo.departmentName || t('header.none') }}
             </el-dropdown-item>
             <el-dropdown-item disabled>
-              <span class="dropdown-label">场所：</span>
-              {{ userInfo.facilityName || '无' }}
+              <span class="dropdown-label">{{ t('header.facility') }}：</span>
+              {{ userInfo.facilityName || t('header.none') }}
             </el-dropdown-item>
-            <el-dropdown-item divided @click="handleLogout">退出登录</el-dropdown-item>
+            <el-dropdown-item divided @click="handleLogout">{{ t('header.logout') }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
