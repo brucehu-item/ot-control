@@ -18,10 +18,15 @@ class OvertimeRequest {
   
   // 关联信息
   workerId: string
+  workerName: string
   departmentId: string
+  departmentName: string
   supervisorId: string
+  supervisorName: string
   managerId?: string
+  managerName?: string
   customerId?: string
+  customerName?: string
   
   // 时间戳
   createdAt: Date
@@ -209,5 +214,24 @@ class OvertimeRequestEditedEvent {
   role: UserRole
   changes: OvertimeRequestEditData
   timestamp: Date
+}
+```
+
+### OvertimeRequestData
+```typescript
+class OvertimeRequestData {
+  startTime: Date
+  endTime: Date
+  reason: string
+  workerId: string
+  workerName: string
+  departmentId: string
+  departmentName: string
+  supervisorId: string
+  supervisorName: string
+  managerId?: string
+  managerName?: string
+  customerId?: string
+  customerName?: string
 }
 ``` 
