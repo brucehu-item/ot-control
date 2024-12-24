@@ -56,11 +56,11 @@ ot-control-web/
 
 3. **API Design and Implementation**
    - Use `prompt/3_build_api_specs_prompt.md` to generate API documentation
+   - Use `prompt/5_build_mock_data_prompt.md` to generate mock data
    - Use `prompt/6_develop_api_prompt.md` to implement APIs (including both real and mock implementations)
 
 4. **Page Design and Implementation**
    - Use `prompt/4_build_page_guideline_prompt.md` to generate page design specifications
-   - Use `prompt/5_build_mock_data_prompt.md` to generate mock data
    - Use `prompt/7_build_page_prompt.md` to implement specific pages
 
 5. **Debugging and Optimization**
