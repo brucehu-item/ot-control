@@ -1,9 +1,11 @@
+import { Inject, Service } from 'typedi';
 import { User } from '../entities/user';
 import { OrganizationInfo } from '../value-objects/organization-info';
 import { UserRepository } from '../repositories/user.repository';
 import { DepartmentRepository } from '../repositories/department.repository';
 import { FacilityRepository } from '../repositories/facility.repository';
 import { UserRole } from '../../../authentication/domain/model/user-role';
+import { ORGANIZATION_TOKENS } from '../../di/tokens';
 
 /**
  * 组织架构服务
@@ -46,10 +48,14 @@ export interface OrganizationService {
   validateUserAuthority(userId: string, targetId: string, operation: string): Promise<boolean>;
 }
 
+@Service()
 export class OrganizationServiceImpl implements OrganizationService {
   constructor(
+    @Inject(ORGANIZATION_TOKENS.USER_REPOSITORY)
     private readonly userRepository: UserRepository,
+    @Inject(ORGANIZATION_TOKENS.DEPARTMENT_REPOSITORY)
     private readonly departmentRepository: DepartmentRepository,
+    @Inject(ORGANIZATION_TOKENS.FACILITY_REPOSITORY)
     private readonly facilityRepository: FacilityRepository,
   ) {}
 

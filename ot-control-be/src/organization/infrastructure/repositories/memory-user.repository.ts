@@ -1,7 +1,9 @@
+import { Service } from 'typedi';
 import { User } from '../../domain/entities/user';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserRole } from '../../../authentication/domain/model/user-role';
 
+@Service()
 export class MemoryUserRepository implements UserRepository {
   private users: Map<string, User> = new Map();
 

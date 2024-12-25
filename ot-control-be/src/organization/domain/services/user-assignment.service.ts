@@ -1,7 +1,9 @@
+import { Inject, Service } from 'typedi';
 import { UserRepository } from '../repositories/user.repository';
 import { DepartmentRepository } from '../repositories/department.repository';
 import { FacilityRepository } from '../repositories/facility.repository';
 import { UserRole } from '../../../authentication/domain/model/user-role';
+import { ORGANIZATION_TOKENS } from '../../di/tokens';
 
 /**
  * 用户分配服务
@@ -42,10 +44,14 @@ export interface UserAssignmentService {
   changeFacilityManager(facilityId: string, newManagerId: string): Promise<void>;
 }
 
+@Service()
 export class UserAssignmentServiceImpl implements UserAssignmentService {
   constructor(
+    @Inject(ORGANIZATION_TOKENS.USER_REPOSITORY)
     private readonly userRepository: UserRepository,
+    @Inject(ORGANIZATION_TOKENS.DEPARTMENT_REPOSITORY)
     private readonly departmentRepository: DepartmentRepository,
+    @Inject(ORGANIZATION_TOKENS.FACILITY_REPOSITORY)
     private readonly facilityRepository: FacilityRepository,
   ) {}
 

@@ -1,6 +1,8 @@
+import { Service } from 'typedi';
 import { Department } from '../../domain/entities/department';
 import { DepartmentRepository } from '../../domain/repositories/department.repository';
 
+@Service()
 export class MemoryDepartmentRepository implements DepartmentRepository {
   private departments: Map<string, Department> = new Map();
 

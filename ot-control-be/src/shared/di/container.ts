@@ -1,9 +1,12 @@
 import { Container } from 'typedi';
 import { configureAuthenticationContext as configureAuthForProd, AuthenticationConfig } from '../../authentication/di/production.config';
 import { configureAuthenticationContext as configureAuthForDev } from '../../authentication/di/development.config';
+import { configureOrganizationContext as configureOrgForProd, OrganizationConfig } from '../../organization/di/production.config';
+import { configureOrganizationContext as configureOrgForDev } from '../../organization/di/development.config';
 
 export interface GlobalConfig {
   auth: AuthenticationConfig;
+  organization: OrganizationConfig;
   // 其他模块的配置可以在这里添加
 }
 
@@ -22,10 +25,15 @@ export class GlobalContainer {
         if (!config?.auth) {
           throw new Error('Production environment requires authentication configuration');
         }
+        if (!config?.organization) {
+          throw new Error('Production environment requires organization configuration');
+        }
         configureAuthForProd(config.auth);
+        configureOrgForProd(config.organization);
       } else {
         // 开发环境使用内存实现
         configureAuthForDev();
+        configureOrgForDev();
       }
 
       // 保存容器实例
