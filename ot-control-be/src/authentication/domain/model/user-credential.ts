@@ -1,5 +1,4 @@
 import { UserRole } from './user-role';
-import * as bcrypt from 'bcrypt';
 
 export class UserCredential {
   constructor(
@@ -22,11 +21,10 @@ export class UserCredential {
   }
 
   public async validatePassword(inputPassword: string): Promise<boolean> {
-    return bcrypt.compare(inputPassword, this.password);
+    return this.password === inputPassword;
   }
 
   public async changePassword(newPassword: string): Promise<void> {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(newPassword, salt);
+    this.password = newPassword;
   }
 } 
