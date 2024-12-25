@@ -5,7 +5,10 @@ import { UserCredentialRepository } from '../../domain/ports/user-credential-rep
 import { SessionService } from '../../domain/ports/session-service';
 import { UserAuthenticatedEvent } from '../../domain/model/events';
 import { INTERNAL_AUTH_TOKENS } from '../../di/tokens';
-import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const TOKEN_EXPIRES_IN = '24h';
 
 @Service()
 export class InMemoryAuthenticationService implements AuthenticationService {
@@ -29,8 +32,14 @@ export class InMemoryAuthenticationService implements AuthenticationService {
       throw new Error('Invalid password');
     }
 
-    // 生成新的认证令牌
-    const token = uuidv4();
+    // 生成 JWT token
+    const payload = {
+      userId: credential.getUserId(),
+      username: credential.getUsername(),
+      role: credential.getRole()
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN });
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24小时后过期
     const authToken = new AuthenticationToken(token, expiresAt);
 
@@ -49,7 +58,12 @@ export class InMemoryAuthenticationService implements AuthenticationService {
   }
 
   async validateToken(token: string): Promise<boolean> {
-    return this.sessionService.validateSession(token);
+    try {
+      jwt.verify(token, JWT_SECRET);
+      return this.sessionService.validateSession(token);
+    } catch (error) {
+      return false;
+    }
   }
 
   async logout(userId: string): Promise<void> {
@@ -63,20 +77,33 @@ export class InMemoryAuthenticationService implements AuthenticationService {
   }
 
   async refreshToken(token: string): Promise<AuthenticationToken> {
-    // 验证当前令牌
-    const isValid = await this.validateToken(token);
-    if (!isValid) {
+    try {
+      // 验证并解码当前令牌
+      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; username: string; role: string };
+      
+      // 验证会话
+      const isValid = await this.sessionService.validateSession(token);
+      if (!isValid) {
+        throw new Error('Invalid session');
+      }
+
+      // 生成新的 JWT token
+      const payload = {
+        userId: decoded.userId,
+        username: decoded.username,
+        role: decoded.role
+      };
+
+      const newToken = jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRES_IN });
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const authToken = new AuthenticationToken(newToken, expiresAt);
+
+      // 刷新会话
+      await this.sessionService.refreshSession(token);
+
+      return authToken;
+    } catch (error) {
       throw new Error('Invalid token');
     }
-
-    // 刷新会话
-    const session = await this.sessionService.refreshSession(token);
-
-    // 创建新的认证令牌
-    const newToken = uuidv4();
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24小时后过期
-    const authToken = new AuthenticationToken(newToken, expiresAt);
-
-    return authToken;
   }
 } 

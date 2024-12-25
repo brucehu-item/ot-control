@@ -3,10 +3,13 @@ import { configureAuthenticationContext as configureAuthForProd, AuthenticationC
 import { configureAuthenticationContext as configureAuthForDev } from '../../authentication/di/development.config';
 import { configureOrganizationContext as configureOrgForProd, OrganizationConfig } from '../../organization/di/production.config';
 import { configureOrganizationContext as configureOrgForDev } from '../../organization/di/development.config';
+import { configureOvertimeContext as configureOvertimeForProd, OvertimeConfig } from '../../overtime/di/production.config';
+import { configureOvertimeContext as configureOvertimeForDev } from '../../overtime/di/development.config';
 
 export interface GlobalConfig {
   auth: AuthenticationConfig;
   organization: OrganizationConfig;
+  overtime: OvertimeConfig;
   // 其他模块的配置可以在这里添加
 }
 
@@ -15,7 +18,7 @@ export class GlobalContainer {
 
   static initialize(config?: GlobalConfig): void {
     try {
-      // 重置容器，确保每次初始化都是干净的状态
+      // 重置容器，确保每次初始化都是干净的��态
       Container.reset();
 
       // 根据环境配置认证模块
@@ -28,12 +31,19 @@ export class GlobalContainer {
         if (!config?.organization) {
           throw new Error('Production environment requires organization configuration');
         }
+        if (!config?.overtime) {
+          throw new Error('Production environment requires overtime configuration');
+        }
+        // 按照依赖顺序初始化
         configureAuthForProd(config.auth);
         configureOrgForProd(config.organization);
+        configureOvertimeForProd(config.overtime);
       } else {
         // 开发环境使用内存实现
+        // 按照依赖顺序初始化
         configureAuthForDev();
         configureOrgForDev();
+        configureOvertimeForDev();
       }
 
       // 保存容器实例
