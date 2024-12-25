@@ -16,10 +16,20 @@ class Facility {
   customerIds: string[]
   
   // 方法
+  // 获取器方法
+  getFacilityId(): string              // 获取场所ID
+  getName(): string                    // 获取场所名称
+  getManagerId(): string              // 获取经理ID
+  getCustomerIds(): string[]          // 获取客户ID列表
+  
+  // 客户管理方法
   addCustomer(customerId: string): void      // 添加客户
   removeCustomer(customerId: string): void   // 移除客户
-  changeManager(managerId: string): void     // 更换经理
   hasCustomer(customerId: string): boolean   // 检查客户是否存在
+  
+  // 场所管理方法
+  changeManager(managerId: string): void     // 更换经理
+  setName(name: string): void               // 修改场所名称
 }
 ```
 
@@ -37,8 +47,18 @@ class Department {
   supervisorId: string
   
   // 方法
+  // 获取器方法
+  getDepartmentId(): string           // 获取部门ID
+  getName(): string                   // 获取部门名称
+  getFacilityId(): string            // 获取所属场所ID
+  getSupervisorId(): string          // 获取主管ID
+  
+  // 部门管理方法
   changeSupervisor(supervisorId: string): void    // 更换主管
   changeFacility(facilityId: string): void        // 更换所属场所
+  setName(name: string): void                     // 修改部门名称
+  
+  // 查询方法
   belongsToFacility(facilityId: string): boolean  // 检查是否属于指定场所
 }
 ```
@@ -60,10 +80,23 @@ class User {
   requiresApproval: boolean
   
   // 方法
+  // 获取器方法
+  getUserId(): string                      // 获取用户ID
+  getUsername(): string                    // 获取用户名
+  getRole(): UserRole                      // 获取用户角色
+  getDepartmentId(): string | undefined    // 获取部门ID
+  getFacilityId(): string | undefined      // 获取场所ID
+  
+  // 组织分配方法
   assignToDepartment(departmentId: string): void  // 分配到部门
   assignToFacility(facilityId: string): void      // 分配到场所
+  
+  // 权限相关方法
   canApproveRequests(): boolean                   // 检查是否有审批权限
   requiresRequestApproval(): boolean              // 检查是否需要审批
+  changeRole(role: UserRole): void               // 修改用户角色
+  setApprovalAuthority(hasAuthority: boolean): void  // 设置审批权限
+  setRequiresApproval(requires: boolean): void      // 设置是否需要审批
 }
 ```
 
@@ -72,14 +105,34 @@ class User {
 ### OrganizationInfo
 ```typescript
 class OrganizationInfo {
+  // 场所信息
   facilityId: string
   facilityName: string
+  
+  // 部门信息（可选）
   departmentId?: string
   departmentName?: string
+  
+  // 主管信息（可选）
   supervisorId?: string
   supervisorName?: string
+  
+  // 经理信息（可选）
   managerId?: string
   managerName?: string
+
+  // 获取器方法
+  getFacilityId(): string                    // 获取场所ID
+  getFacilityName(): string                  // 获取场所名称
+  getDepartmentId(): string | undefined      // 获取部门ID
+  getDepartmentName(): string | undefined    // 获取部门名称
+  getSupervisorId(): string | undefined      // 获取主管ID
+  getSupervisorName(): string | undefined    // 获取主管名称
+  getManagerId(): string | undefined         // 获取经理ID
+  getManagerName(): string | undefined       // 获取经理名称
+
+  // 值对象比较方法
+  equals(other: OrganizationInfo): boolean   // 比较两个组织信息是否相等
 }
 ```
 
@@ -240,7 +293,7 @@ class UserAssignmentChangedEvent {
 ### OrganizationCore
 ```typescript
 interface OrganizationCore {
-  // 供其他上下文使用的核心接口
+  // 供其他上下文��用的核心接口
   getUserById(userId: string): Promise<User>
   getDepartmentById(departmentId: string): Promise<Department>
   getFacilityById(facilityId: string): Promise<Facility>
