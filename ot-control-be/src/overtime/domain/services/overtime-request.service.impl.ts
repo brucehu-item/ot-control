@@ -41,7 +41,7 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       requiresCustomerApproval = customer.requiresRequestApproval();
     }
 
-    // 创���新的加班申请，包含审批标记
+    // 创建新的加班申请，包含审批标记
     const requestData = new OvertimeRequestData(
       data.startTime,
       data.endTime,
@@ -50,6 +50,8 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       data.workerName,
       data.departmentId,
       data.departmentName,
+      data.facilityId,
+      data.facilityName,
       data.supervisorId,
       data.supervisorName,
       requiresManagerApproval,
@@ -71,6 +73,7 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
   async approveRequest(
     requestId: string,
     approverId: string,
+    approverName: string,
     role: UserRole,
     comment?: string
   ): Promise<void> {
@@ -89,13 +92,14 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       throw new Error('User is not authorized to approve requests');
     }
 
-    request.approve(approverId, role, comment);
+    request.approve(approverId, approverName, role, comment);
     await this.overtimeRequestRepository.save(request);
   }
 
   async rejectRequest(
     requestId: string,
     approverId: string,
+    approverName: string,
     role: UserRole,
     comment?: string
   ): Promise<void> {
@@ -114,7 +118,7 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       throw new Error('User is not authorized to reject requests');
     }
 
-    request.reject(approverId, role, comment);
+    request.reject(approverId, approverName, role, comment);
     await this.overtimeRequestRepository.save(request);
   }
 

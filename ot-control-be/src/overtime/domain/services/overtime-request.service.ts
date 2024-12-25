@@ -9,8 +9,8 @@ export interface OvertimeRequestService {
   createRequest(data: OvertimeRequestData): Promise<OvertimeRequest>;
   
   // 审批相关
-  approveRequest(requestId: string, approverId: string, role: UserRole, comment?: string): Promise<void>;
-  rejectRequest(requestId: string, approverId: string, role: UserRole, comment?: string): Promise<void>;
+  approveRequest(requestId: string, approverId: string, approverName: string, role: UserRole, comment?: string): Promise<void>;
+  rejectRequest(requestId: string, approverId: string, approverName: string, role: UserRole, comment?: string): Promise<void>;
   
   // 编辑和取消
   editRequest(requestId: string, data: OvertimeRequestEditData, editorId: string, role: UserRole): Promise<void>;

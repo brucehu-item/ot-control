@@ -8,16 +8,18 @@
 ```typescript
 class UserCredential {
   // 标识符
-  userId
-  username
+  userId: string
+  username: string
   
   // 属性
-  password
-  role
+  password: string
+  role: UserRole
+  firstName: string   // 新增名字
+  lastName: string    // 新增姓氏
   
   // 方法
-  validatePassword(inputPassword)  // 验证密码是否正确
-  changePassword(newPassword)     // 修改密码
+  validatePassword(inputPassword: string): boolean  // 验证密码是否正确
+  changePassword(newPassword: string): void        // 修改密码
 }
 ```
 
@@ -238,10 +240,12 @@ interface AuthenticationFacade {
 }
 
 interface UserInfo {
-  userId
-  username
-  role
-  permissions
+  userId: string
+  username: string
+  firstName: string   // 新增名字
+  lastName: string    // 新增姓氏
+  role: UserRole
+  permissions: string[]
 }
 ```
 

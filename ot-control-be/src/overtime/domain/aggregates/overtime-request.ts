@@ -14,6 +14,8 @@ export class OvertimeRequest {
   private workerName: string;
   private departmentId: string;
   private departmentName: string;
+  private facilityId: string;
+  private facilityName: string;
   private supervisorId: string;
   private supervisorName: string;
   private requiresManagerApproval: boolean;
@@ -36,6 +38,8 @@ export class OvertimeRequest {
     this.workerName = data.workerName;
     this.departmentId = data.departmentId;
     this.departmentName = data.departmentName;
+    this.facilityId = data.facilityId;
+    this.facilityName = data.facilityName;
     this.supervisorId = data.supervisorId;
     this.supervisorName = data.supervisorName;
     this.requiresManagerApproval = data.requiresManagerApproval;
@@ -59,6 +63,8 @@ export class OvertimeRequest {
   getWorkerName(): string { return this.workerName; }
   getDepartmentId(): string { return this.departmentId; }
   getDepartmentName(): string { return this.departmentName; }
+  getFacilityId(): string { return this.facilityId; }
+  getFacilityName(): string { return this.facilityName; }
   getSupervisorId(): string { return this.supervisorId; }
   getSupervisorName(): string { return this.supervisorName; }
   getManagerId(): string | undefined { return this.managerId; }
@@ -70,21 +76,21 @@ export class OvertimeRequest {
   getApprovalRecords(): ApprovalRecord[] { return [...this.approvalRecords]; }
 
   // 审批方法
-  approve(approverId: string, role: UserRole, comment?: string): void {
+  approve(approverId: string, approverName: string, role: UserRole, comment?: string): void {
     this.validateApprover(approverId, role);
     this.validateStatus(this.getNextStatusAfterApproval(role));
 
-    const approvalRecord = new ApprovalRecord(approverId, role, 'APPROVE', comment);
+    const approvalRecord = new ApprovalRecord(approverId, approverName, role, 'APPROVE', comment);
     this.approvalRecords.push(approvalRecord);
     this.status = this.getNextStatusAfterApproval(role);
     this.updatedAt = new Date();
   }
 
-  reject(approverId: string, role: UserRole, comment?: string): void {
+  reject(approverId: string, approverName: string, role: UserRole, comment?: string): void {
     this.validateApprover(approverId, role);
     this.validateStatus(OvertimeRequestStatus.REJECTED);
 
-    const approvalRecord = new ApprovalRecord(approverId, role, 'REJECT', comment);
+    const approvalRecord = new ApprovalRecord(approverId, approverName, role, 'REJECT', comment);
     this.approvalRecords.push(approvalRecord);
     this.status = OvertimeRequestStatus.REJECTED;
     this.updatedAt = new Date();

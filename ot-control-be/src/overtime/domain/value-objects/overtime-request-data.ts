@@ -7,6 +7,8 @@ export class OvertimeRequestData {
     public readonly workerName: string,
     public readonly departmentId: string,
     public readonly departmentName: string,
+    public readonly facilityId: string,
+    public readonly facilityName: string,
     public readonly supervisorId: string,
     public readonly supervisorName: string,
     public readonly requiresManagerApproval: boolean,
@@ -26,6 +28,8 @@ export class OvertimeRequestData {
       this.workerName === other.workerName &&
       this.departmentId === other.departmentId &&
       this.departmentName === other.departmentName &&
+      this.facilityId === other.facilityId &&
+      this.facilityName === other.facilityName &&
       this.supervisorId === other.supervisorId &&
       this.supervisorName === other.supervisorName &&
       this.requiresManagerApproval === other.requiresManagerApproval &&

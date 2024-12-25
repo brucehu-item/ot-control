@@ -21,6 +21,8 @@ class OvertimeRequest {
   workerName: string
   departmentId: string
   departmentName: string
+  facilityId: string
+  facilityName: string
   supervisorId: string
   supervisorName: string
   managerId?: string
@@ -77,6 +79,7 @@ enum OvertimeRequestStatus {
 ```typescript
 class ApprovalRecord {
   approverId: string
+  approverName: string
   role: UserRole
   action: 'APPROVE' | 'REJECT'
   comment?: string
