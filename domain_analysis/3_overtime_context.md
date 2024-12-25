@@ -28,6 +28,10 @@ class OvertimeRequest {
   customerId?: string
   customerName?: string
   
+  // 审批控制
+  requiresManagerApproval: boolean
+  requiresCustomerApproval: boolean
+  
   // 时间戳
   createdAt: Date
   updatedAt: Date
@@ -77,6 +81,8 @@ class ApprovalRecord {
   action: 'APPROVE' | 'REJECT'
   comment?: string
   timestamp: Date
+
+  equals(other: ApprovalRecord): boolean
 }
 ```
 
@@ -87,6 +93,9 @@ class OvertimeRequestEditData {
   endTime?: Date
   reason?: string
   customerId?: string
+
+  hasChanges(): boolean
+  equals(other: OvertimeRequestEditData): boolean
 }
 ```
 
@@ -102,6 +111,32 @@ class RequestSearchCriteria {
   endDate?: Date
   page: number
   pageSize: number
+
+  equals(other: RequestSearchCriteria): boolean
+  hasFilters(): boolean
+}
+```
+
+### OvertimeRequestData
+```typescript
+class OvertimeRequestData {
+  startTime: Date
+  endTime: Date
+  reason: string
+  workerId: string
+  workerName: string
+  departmentId: string
+  departmentName: string
+  supervisorId: string
+  supervisorName: string
+  requiresManagerApproval: boolean
+  requiresCustomerApproval: boolean
+  managerId?: string
+  managerName?: string
+  customerId?: string
+  customerName?: string
+
+  equals(other: OvertimeRequestData): boolean
 }
 ```
 
@@ -110,7 +145,7 @@ class RequestSearchCriteria {
 ### OvertimeRequestService
 ```typescript
 interface OvertimeRequestService {
-  // 创建加班申请（直接创建并提交）
+  // 创建加班申请
   createRequest(data: OvertimeRequestData): Promise<OvertimeRequest>
   
   // 审批相关
@@ -139,7 +174,7 @@ interface OvertimeRequestService {
 ```typescript
 interface OvertimeRequestRepository {
   save(request: OvertimeRequest): Promise<void>
-  findById(requestId: string): Promise<OvertimeRequest>
+  findById(requestId: string): Promise<OvertimeRequest | null>
   findByWorkerId(workerId: string, criteria: RequestSearchCriteria): Promise<{
     requests: OvertimeRequest[],
     total: number
@@ -214,24 +249,5 @@ class OvertimeRequestEditedEvent {
   role: UserRole
   changes: OvertimeRequestEditData
   timestamp: Date
-}
-```
-
-### OvertimeRequestData
-```typescript
-class OvertimeRequestData {
-  startTime: Date
-  endTime: Date
-  reason: string
-  workerId: string
-  workerName: string
-  departmentId: string
-  departmentName: string
-  supervisorId: string
-  supervisorName: string
-  managerId?: string
-  managerName?: string
-  customerId?: string
-  customerName?: string
 }
 ``` 
