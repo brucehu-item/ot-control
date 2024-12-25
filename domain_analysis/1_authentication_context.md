@@ -123,7 +123,7 @@ interface SessionService {
   // 输入：认证令牌
   // 输出：会话信息
   // 业务意义：根据令牌获取对应的会话信息
-  getSession(token: string): Promise<Session>
+  getSession(token: string): Promise<Session | null>
   
   // 验证会话
   // 输入：认证令牌
@@ -148,6 +148,12 @@ interface SessionService {
   // 输出：清理的会话数量
   // 业务意义：定期清理系统中的过期会话
   cleanExpiredSessions(): Promise<number>
+
+  // 查找用户的所有会话
+  // 输入：用户ID
+  // 输出：用户的所有会话列表
+  // 业务意义：获取指定用户的所有活动会话，用于会话管理和安全审计
+  findByUserId(userId: string): Promise<Session[]>
   
   // 依赖关系：
   // - 需要访问 Session 聚合
