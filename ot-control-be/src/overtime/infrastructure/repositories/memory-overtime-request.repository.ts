@@ -146,7 +146,7 @@ export class MemoryOvertimeRequestRepository implements OvertimeRequestRepositor
     let id = request.getId();
     
     // 如果是新请求（没有ID），生成新的序列号ID
-    if (!id) {
+    if (!id || !id.startsWith('OT')) {
       const sequence = await this.getNextSequenceNumber();
       id = `OT${sequence.toString().padStart(3, '0')}`;
       (request as any).id = id;
@@ -230,11 +230,7 @@ export class MemoryOvertimeRequestRepository implements OvertimeRequestRepositor
     total: number;
   }> {
     return this.findAndPaginate(
-      request => {
-        const departmentId = request.getDepartmentId();
-        // 注意：这里简化了实现，实际应该通过组织架构服务来判断部门是否属于该场所
-        return departmentId.startsWith(facilityId);
-      },
+      request => request.getFacilityId() === facilityId,
       criteria
     );
   }

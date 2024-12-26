@@ -196,14 +196,29 @@ export class OvertimeController {
         try {
             console.log(`[Overtime] Finding requests - User ID: ${req.user?.userId}, Query:`, req.query);
             
+            let startDate: Date | undefined;
+            let endDate: Date | undefined;
+            
+            if (Array.isArray(req.query.startDate)) {
+                startDate = new Date(req.query.startDate[0] as string);
+            } else if (req.query.startDate) {
+                startDate = new Date(req.query.startDate as string);
+            }
+
+            if (Array.isArray(req.query.endDate)) {
+                endDate = new Date(req.query.endDate[0] as string);
+            } else if (req.query.endDate) {
+                endDate = new Date(req.query.endDate as string);
+            }
+
             const criteria = {
                 workerId: req.query.workerId as string,
                 departmentId: req.query.departmentId as string,
                 facilityId: req.query.facilityId as string,
                 customerId: req.query.customerId as string,
                 status: req.query.status as OvertimeRequestStatus,
-                startDate: req.query.startDate ? new Date(req.query.startDate as string) : undefined,
-                endDate: req.query.endDate ? new Date(req.query.endDate as string) : undefined,
+                startDate,
+                endDate,
                 page: parseInt(req.query.page as string) || 1,
                 pageSize: parseInt(req.query.pageSize as string) || 20,
                 equals: () => false,

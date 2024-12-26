@@ -21,7 +21,7 @@ const calculateDuration = (startTime, endTime) => {
 
 // 搜索条件
 const searchForm = ref({
-  startDate: '',
+  startDate: [],
   endDate: '',
   status: '',
   departmentId: '',
@@ -195,7 +195,7 @@ const initSearchFormByRole = (userInfo) => {
 const resetSearch = async () => {
   if (currentUser.value) {
     searchForm.value = {
-      startDate: '',
+      startDate: [],
       endDate: '',
       status: '',
       departmentId: '',
@@ -217,6 +217,8 @@ const fetchData = async () => {
     // 构建请求参数
     const params = {
       ...searchForm.value,
+      startDate: searchForm.value.startDate ? searchForm.value.startDate[0] : undefined,
+      endDate: searchForm.value.startDate ? searchForm.value.startDate[1] : undefined,
       page: currentPage.value,
       pageSize: pageSize.value
     }
@@ -325,7 +327,6 @@ onMounted(async () => {
         <el-form-item :label="t('overtime.list.search.startDate')">
           <el-date-picker
             v-model="searchForm.startDate"
-            v-model:end="searchForm.endDate"
             type="daterange"
             range-separator="至"
             :start-placeholder="t('overtime.list.search.startDate')"
