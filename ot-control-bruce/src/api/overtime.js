@@ -13,12 +13,6 @@ export const overtimeApi = {
     return response.data
   },
 
-  // 获取加班申请详情
-  getOvertimeRequestDetails: async (requestId) => {
-    const response = await axiosInstance.get(`/overtime/overtime-requests/${requestId}`)
-    return response.data
-  },
-
   // 审批通过加班申请
   approveOvertimeRequest: async (requestId, approvalData) => {
     const response = await axiosInstance.post(

@@ -8,6 +8,17 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const router = useRouter()
 
+// Helper functions for date and time formatting
+const formatDateTime = (dateStr) => {
+  if (!dateStr) return ''
+  return new Date(dateStr).toLocaleString()
+}
+
+const calculateDuration = (startTime, endTime) => {
+  if (!startTime || !endTime) return 0
+  return ((new Date(endTime) - new Date(startTime)) / (1000 * 60 * 60)).toFixed(1)
+}
+
 // 搜索条件
 const searchForm = ref({
   startDate: '',
@@ -406,17 +417,17 @@ onMounted(async () => {
         </el-table-column>
         <el-table-column prop="startTime" :label="t('overtime.list.table.startTime')" min-width="180">
           <template #default="{ row }">
-            {{ new Date(row.startTime).toLocaleString() }}
+            {{ formatDateTime(row.startTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="endTime" :label="t('overtime.list.table.endTime')" min-width="180">
           <template #default="{ row }">
-            {{ new Date(row.endTime).toLocaleString() }}
+            {{ formatDateTime(row.endTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="duration" :label="t('overtime.list.table.duration')" min-width="120">
           <template #default="{ row }">
-            {{ ((new Date(row.endTime) - new Date(row.startTime)) / (1000 * 60 * 60)).toFixed(1) }}{{ t('overtime.list.table.hour') }}
+            {{ calculateDuration(row.startTime, row.endTime) }}{{ t('overtime.list.table.hour') }}
           </template>
         </el-table-column>
         <el-table-column prop="status" :label="t('overtime.list.table.status')" min-width="150">
@@ -497,9 +508,9 @@ onMounted(async () => {
               {{ t(`overtime.list.status.${currentDetail.status}`) }}
             </el-tag>
           </el-descriptions-item>
-          <el-descriptions-item :label="t('overtime.list.table.startTime')" :span="2">{{ currentDetail.startTime }}</el-descriptions-item>
-          <el-descriptions-item :label="t('overtime.list.table.endTime')" :span="2">{{ currentDetail.endTime }}</el-descriptions-item>
-          <el-descriptions-item :label="t('overtime.list.table.duration')" :span="2">{{ currentDetail.duration }}{{ t('overtime.list.table.hour') }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.startTime')" :span="2">{{ formatDateTime(currentDetail.startTime) }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.endTime')" :span="2">{{ formatDateTime(currentDetail.endTime) }}</el-descriptions-item>
+          <el-descriptions-item :label="t('overtime.list.table.duration')" :span="2">{{ calculateDuration(currentDetail.startTime, currentDetail.endTime) }}{{ t('overtime.list.table.hour') }}</el-descriptions-item>
           <el-descriptions-item :label="t('overtime.list.table.reason')" :span="2">{{ currentDetail.reason }}</el-descriptions-item>
         </el-descriptions>
 
@@ -533,10 +544,13 @@ onMounted(async () => {
           <span>{{ currentApprovalRequest?.workerName }}</span>
         </el-form-item>
         <el-form-item :label="t('overtime.list.table.startTime')">
-          <span>{{ new Date(currentApprovalRequest?.startTime).toLocaleString() }}</span>
+          <span>{{ formatDateTime(currentApprovalRequest?.startTime) }}</span>
         </el-form-item>
         <el-form-item :label="t('overtime.list.table.endTime')">
-          <span>{{ new Date(currentApprovalRequest?.endTime).toLocaleString() }}</span>
+          <span>{{ formatDateTime(currentApprovalRequest?.endTime) }}</span>
+        </el-form-item>
+        <el-form-item :label="t('overtime.list.table.duration')">
+          <span>{{ calculateDuration(currentApprovalRequest?.startTime, currentApprovalRequest?.endTime) }}{{ t('overtime.list.table.hour') }}</span>
         </el-form-item>
         <el-form-item :label="t('overtime.list.table.reason')">
           <span>{{ currentApprovalRequest?.reason }}</span>

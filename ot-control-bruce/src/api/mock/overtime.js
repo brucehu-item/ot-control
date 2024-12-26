@@ -71,16 +71,6 @@ export const overtimeApi = {
     }
   },
 
-  // 获取加班申请详情
-  getOvertimeRequestDetails: async (requestId) => {
-    await delay(300)
-    const request = mockOvertimeRequests.overtimeRequests.find(r => r.id === requestId)
-    if (!request) {
-      throw new Error('Overtime request not found')
-    }
-    return request
-  },
-
   // 审批通过加班申请
   approveOvertimeRequest: async (requestId, approvalData) => {
     await delay(500)
