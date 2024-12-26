@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 注册路由
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/organizations', organizationRoutes);
+app.use('/api/v1/organization', organizationRoutes);
 app.use('/api/v1/overtime', overtimeRoutes);
 
 // 错误处理中间件
