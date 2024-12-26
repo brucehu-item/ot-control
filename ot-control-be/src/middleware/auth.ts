@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 import { UnauthorizedError } from './error';
+import { SecurityContext } from '../authentication/domain/model/security-context';
 
 interface JwtPayload {
     userId: string;
@@ -28,9 +29,18 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         console.log('[Auth] Attempting to verify JWT token');
         const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
 
-        req.user = decoded;
-        console.log(`[Auth] Successfully authenticated user ${decoded.userId} with role ${decoded.role}`);
-        next();
+        SecurityContext.runWithContext(token, async () => {
+            console.log('[Auth] Request processing in SecurityContext');
+            req.user = decoded;
+            console.log(`[Auth] Successfully authenticated user ${decoded.userId} with role ${decoded.role}`);
+            return new Promise<void>((resolve) => {
+                next();
+                resolve();
+            });
+        }).catch(error => {
+            console.error('[Auth] Error in SecurityContext:', error);
+            next(error);
+        });
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
             console.error('[Auth] JWT verification failed:', error.message);
