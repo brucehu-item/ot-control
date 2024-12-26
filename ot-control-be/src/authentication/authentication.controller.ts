@@ -15,11 +15,18 @@ export class AuthenticationController {
     ) {}
 
     login = async (req: Request, res: Response) => {
+        console.log('[Auth] Login attempt:', { username: req.body.username });
         try {
             const { username, password } = req.body;
+            console.log('[Auth] Authenticating user...');
             const result = await this.authService.authenticate(username, password);
+            console.log('[Auth] Login successful:', { 
+                token: result.getToken(),
+                expiresAt: result.getExpiresAt()
+            });
             res.json(result);
         } catch (error) {
+            console.error('[Auth] Login failed:', error);
             res.status(401).json({
                 code: 'AUTHENTICATION_FAILED',
                 message: 'Invalid username or password'
@@ -60,16 +67,31 @@ export class AuthenticationController {
     };
 
     getCurrentUser = async (req: Request, res: Response) => {
+        console.log('[Auth] Getting current user info');
         try {
-            const userInfo = await this.authFacade.getCurrentUser();
-            if (!userInfo) {
+            const userId = req.user?.userId;
+            if (!userId) {
+                console.error('[Auth] getCurrentUser failed: No user ID in request');
+                throw new Error('User not authenticated');
+            }
+            console.log('[Auth] Fetching user details for:', userId);
+            const user = await this.authFacade.getCurrentUser();
+            if (!user) {
+                console.error('[Auth] User not found');
                 throw new Error('User not found');
             }
-            res.json(userInfo);
+            console.log('[Auth] User details retrieved successfully:', { 
+                userId: user.userId,
+                username: user.username,
+                role: user.role,
+                permissionsCount: user.permissions.length
+            });
+            res.json(user);
         } catch (error) {
+            console.error('[Auth] getCurrentUser failed:', error);
             res.status(401).json({
-                code: 'USER_INFO_FAILED',
-                message: 'Failed to get user information'
+                code: 'GET_CURRENT_USER_FAILED',
+                message: 'Failed to get current user'
             });
         }
     };

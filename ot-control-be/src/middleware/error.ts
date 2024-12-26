@@ -42,18 +42,25 @@ export const errorHandler = (
     res: Response,
     next: NextFunction
 ): void => {
+    console.error('[Error] ====== Error Handler Start ======');
+    console.error(`[Error] Path: ${req.method} ${req.path}`);
+    console.error(`[Error] Error Type: ${err.constructor.name}`);
+    console.error(`[Error] Message: ${err.message}`);
+    
     if (err instanceof AppError) {
+        console.error(`[Error] Status Code: ${err.statusCode}`);
+        console.error(`[Error] Status: ${err.status}`);
         res.status(err.statusCode).json({
             status: err.status,
             message: err.message
         });
-        return;
+    } else {
+        console.error('[Error] Unhandled Error - Sending 500 Internal Server Error');
+        console.error('[Error] Stack:', err.stack);
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal server error'
+        });
     }
-
-    console.error('Error:', err);
-
-    res.status(500).json({
-        status: 'error',
-        message: 'Internal server error'
-    });
+    console.error('[Error] ====== Error Handler End ======\n');
 }; 
