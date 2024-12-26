@@ -29,18 +29,39 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         console.log('[Auth] Attempting to verify JWT token');
         const decoded = jwt.verify(token, config.jwtSecret) as JwtPayload;
 
-        SecurityContext.runWithContext(token, async () => {
-            console.log('[Auth] Request processing in SecurityContext');
-            req.user = decoded;
-            console.log(`[Auth] Successfully authenticated user ${decoded.userId} with role ${decoded.role}`);
-            return new Promise<void>((resolve) => {
+        // 设置用户信息
+        req.user = decoded;
+        console.log(`[Auth] Successfully authenticated user ${decoded.userId} with role ${decoded.role}`);
+
+        // 使用SecurityContext.runWithContext来管理token
+        SecurityContext.runWithContext(token, () => {
+            return new Promise<void>((resolve, reject) => {
+                // 将resolve和reject存储在请求对象中，以便后续使用
+                (req as any).__securityContextResolve = resolve;
+                (req as any).__securityContextReject = reject;
+
                 next();
-                resolve();
             });
         }).catch(error => {
             console.error('[Auth] Error in SecurityContext:', error);
             next(error);
         });
+
+        // 在请求结束时处理Promise
+        res.on('finish', () => {
+            console.log('[Auth] Request finished, resolving SecurityContext');
+            if ((req as any).__securityContextResolve) {
+                (req as any).__securityContextResolve();
+            }
+        });
+
+        res.on('error', (error) => {
+            console.error('[Auth] Request error, rejecting SecurityContext:', error);
+            if ((req as any).__securityContextReject) {
+                (req as any).__securityContextReject(error);
+            }
+        });
+
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {
             console.error('[Auth] JWT verification failed:', error.message);

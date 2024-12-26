@@ -166,8 +166,8 @@ export class OvertimeRequest {
     if (role === UserRole.SUPERVISOR) {
       return userId === this.supervisorId;
     }
-    if (role === UserRole.MANAGER && this.managerId) {
-      return userId === this.managerId;
+    if (role === UserRole.MANAGER) {
+      return this.managerId ? userId === this.managerId : true;
     }
     return false;
   }

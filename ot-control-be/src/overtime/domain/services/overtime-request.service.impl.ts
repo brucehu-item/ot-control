@@ -202,6 +202,23 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       throw new Error('Overtime request not found');
     }
 
+    // 如果是经理取消，且请求没有经理信息，先设置经理信息
+    if (role === UserRole.MANAGER && !request.getManagerId()) {
+      const departmentHierarchy = await this.organizationService.getDepartmentHierarchy(request.getDepartmentId());
+      const facilityManagerId = departmentHierarchy.getManagerId();
+      const facilityManagerName = departmentHierarchy.getManagerName();
+      
+      if (!facilityManagerId || !facilityManagerName) {
+        throw new Error('Facility manager not found');
+      }
+
+      if (userId !== facilityManagerId) {
+        throw new Error('Only the facility manager can cancel this request');
+      }
+
+      request.setManager(facilityManagerId, facilityManagerName);
+    }
+
     request.cancel(userId, role);
     await this.overtimeRequestRepository.save(request);
   }

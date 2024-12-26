@@ -42,7 +42,7 @@ router.put('/overtime-requests/:requestId', authenticate, requireRole(['WORKER']
 });
 
 // Cancel overtime request
-router.post('/overtime-requests/:requestId/cancel', authenticate, requireRole(['WORKER']), (req: Request, res: Response) => {
+router.post('/overtime-requests/:requestId/cancel', authenticate, requireRole(['WORKER', 'SUPERVISOR', 'MANAGER']), (req: Request, res: Response) => {
     const overtimeController = GlobalContainer.getInstance().get(OvertimeController);
     return overtimeController.cancelRequest(req, res);
 });
