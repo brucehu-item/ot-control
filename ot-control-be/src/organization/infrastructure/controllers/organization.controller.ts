@@ -3,6 +3,7 @@ import { Service, Inject } from 'typedi';
 import { OrganizationService } from '../../domain/services/organization.service';
 import { UserAssignmentService } from '../../domain/services/user-assignment.service';
 import { ORGANIZATION_TOKENS } from '../../di/tokens';
+import { Department } from '../../domain/entities/department';
 
 @Service()
 export class OrganizationController {
@@ -12,6 +13,28 @@ export class OrganizationController {
         @Inject(ORGANIZATION_TOKENS.USER_ASSIGNMENT_SERVICE)
         private readonly userAssignmentService: UserAssignmentService
     ) {}
+
+    getDepartments = async (req: Request, res: Response) => {
+        try {
+            const { facilityId } = req.query;
+            const departments: Department[] = await this.organizationService.getDepartmentsByFacility(facilityId as string);
+            
+            // 转换为前端需要的格式
+            const result = departments.map(dept => ({
+                departmentId: dept.getDepartmentId(),
+                name: dept.getName(),
+                facilityId: dept.getFacilityId(),
+                supervisorId: dept.getSupervisorId()
+            }));
+
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({
+                code: 'GET_DEPARTMENTS_ERROR',
+                message: 'Failed to get departments'
+            });
+        }
+    };
 
     getFacilityCustomers = async (req: Request, res: Response) => {
         try {

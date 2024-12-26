@@ -5,6 +5,12 @@ import { GlobalContainer } from '../shared/di/container';
 
 const router = Router();
 
+// Get departments
+router.get('/departments', authenticate, (req: Request, res: Response) => {
+    const organizationController = GlobalContainer.getInstance().get(OrganizationController);
+    return organizationController.getDepartments(req, res);
+});
+
 // Get facility customers
 router.get('/facilities/:facilityId/customers', authenticate, (req: Request, res: Response) => {
     const organizationController = GlobalContainer.getInstance().get(OrganizationController);

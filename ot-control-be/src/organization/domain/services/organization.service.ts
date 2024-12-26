@@ -1,5 +1,6 @@
 import { Inject, Service } from 'typedi';
 import { User } from '../entities/user';
+import { Department } from '../entities/department';
 import { OrganizationInfo } from '../value-objects/organization-info';
 import { UserRepository } from '../repositories/user.repository';
 import { DepartmentRepository } from '../repositories/department.repository';
@@ -46,6 +47,14 @@ export interface OrganizationService {
    * @description 验证用户是否有权限执行特定操作
    */
   validateUserAuthority(userId: string, targetId: string, operation: string): Promise<boolean>;
+
+  /**
+   * 获取设施下的所有部门
+   * @param facilityId 设施ID
+   * @returns 部门列表
+   * @description 获取指定设施下的所有部门信息
+   */
+  getDepartmentsByFacility(facilityId: string): Promise<Department[]>;
 }
 
 @Service()
@@ -169,5 +178,9 @@ export class OrganizationServiceImpl implements OrganizationService {
       default:
         return false;
     }
+  }
+
+  public async getDepartmentsByFacility(facilityId: string): Promise<Department[]> {
+    return this.departmentRepository.findByFacilityId(facilityId);
   }
 } 
