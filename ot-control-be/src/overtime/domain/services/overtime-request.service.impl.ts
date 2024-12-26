@@ -86,7 +86,8 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       data.customerName
     );
 
-    const request = new OvertimeRequest(uuidv4(), requestData);
+    // 创建请求对象（使用临时ID，Repository会在保存时替换为正确的序列号ID）
+    const request = new OvertimeRequest('', requestData);
 
     // 保存到仓储
     await this.overtimeRequestRepository.save(request);

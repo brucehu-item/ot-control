@@ -35,6 +35,7 @@ interface UserData {
 export class MemoryOvertimeRequestRepository implements OvertimeRequestRepository {
   private requests: Map<string, OvertimeRequest> = new Map();
   private userConfigs: Map<string, UserData> = new Map();
+  private currentSequence: number = 0;
 
   constructor() {
     // 初始化用户配置
@@ -123,8 +124,35 @@ export class MemoryOvertimeRequestRepository implements OvertimeRequestRepositor
     }
   }
 
+  private async getNextSequenceNumber(): Promise<number> {
+    // 获取所有请求ID
+    const ids = Array.from(this.requests.keys());
+    
+    // 找出当前最大的序列号
+    const maxSequence = ids.reduce((max, id) => {
+      if (id.startsWith('OT')) {
+        const sequence = parseInt(id.substring(2));
+        return isNaN(sequence) ? max : Math.max(max, sequence);
+      }
+      return max;
+    }, 0);
+
+    // 返回下一个序列号
+    this.currentSequence = maxSequence + 1;
+    return this.currentSequence;
+  }
+
   async save(request: OvertimeRequest): Promise<void> {
-    this.requests.set(request.getId(), request);
+    let id = request.getId();
+    
+    // 如果是新请求（没有ID），生成新的序列号ID
+    if (!id) {
+      const sequence = await this.getNextSequenceNumber();
+      id = `OT${sequence.toString().padStart(3, '0')}`;
+      (request as any).id = id;
+    }
+    
+    this.requests.set(id, request);
   }
 
   async findById(requestId: string): Promise<OvertimeRequest | null> {
