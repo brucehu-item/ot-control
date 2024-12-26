@@ -60,11 +60,8 @@ export class MemoryUserRepository implements UserRepository {
             .filter(user => user.getRole() === role);
     }
 
-    public async findCustomersByFacilityId(facilityId: string): Promise<User[]> {
+    public async findByIds(userIds: string[]): Promise<User[]> {
         return Array.from(this.users.values())
-            .filter(user =>
-                user.getFacilityId() === facilityId &&
-                user.getRole() === UserRole.CUSTOMER
-            );
+            .filter(user => userIds.includes(user.getUserId()));
     }
 } 

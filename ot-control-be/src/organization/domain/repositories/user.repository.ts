@@ -7,5 +7,5 @@ export interface UserRepository {
   findByDepartmentId(departmentId: string): Promise<User[]>;
   findByFacilityId(facilityId: string): Promise<User[]>;
   findByRole(role: UserRole): Promise<User[]>;
-  findCustomersByFacilityId(facilityId: string): Promise<User[]>;
+  findByIds(userIds: string[]): Promise<User[]>;
 } 

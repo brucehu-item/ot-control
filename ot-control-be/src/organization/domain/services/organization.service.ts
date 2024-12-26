@@ -117,7 +117,12 @@ export class OrganizationServiceImpl implements OrganizationService {
   }
 
   public async getFacilityCustomers(facilityId: string): Promise<User[]> {
-    return this.userRepository.findCustomersByFacilityId(facilityId);
+    const facility = await this.facilityRepository.findById(facilityId);
+    if (!facility) {
+      throw new Error(`Facility not found: ${facilityId}`);
+    }
+    const customerIds = facility.getCustomerIds();
+    return this.userRepository.findByIds(customerIds);
   }
 
   public async validateUserAuthority(userId: string, targetId: string, operation: string): Promise<boolean> {
