@@ -5,6 +5,7 @@ import { MemoryDepartmentRepository } from '../infrastructure/repositories/memor
 import { MemoryFacilityRepository } from '../infrastructure/repositories/memory-facility.repository';
 import { OrganizationServiceImpl } from '../domain/services/organization.service';
 import { UserAssignmentServiceImpl } from '../domain/services/user-assignment.service';
+import { ORGANIZATION_TOKENS as SHARED_ORGANIZATION_TOKENS } from '../../shared/di/tokens';
 
 export function configureOrganizationContext(): void {
   // 配置仓储
@@ -24,14 +25,14 @@ export function configureOrganizationContext(): void {
   );
 
   // 配置服务
-  Container.set(
-    ORGANIZATION_TOKENS.ORGANIZATION_SERVICE,
-    new OrganizationServiceImpl(
-      Container.get(ORGANIZATION_TOKENS.USER_REPOSITORY),
-      Container.get(ORGANIZATION_TOKENS.DEPARTMENT_REPOSITORY),
-      Container.get(ORGANIZATION_TOKENS.FACILITY_REPOSITORY)
-    )
+  const organizationService = new OrganizationServiceImpl(
+    Container.get(ORGANIZATION_TOKENS.USER_REPOSITORY),
+    Container.get(ORGANIZATION_TOKENS.DEPARTMENT_REPOSITORY),
+    Container.get(ORGANIZATION_TOKENS.FACILITY_REPOSITORY)
   );
+
+  Container.set(ORGANIZATION_TOKENS.ORGANIZATION_SERVICE, organizationService);
+  Container.set(SHARED_ORGANIZATION_TOKENS.OrganizationService, organizationService);
 
   Container.set(
     ORGANIZATION_TOKENS.USER_ASSIGNMENT_SERVICE,

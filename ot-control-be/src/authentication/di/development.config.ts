@@ -1,6 +1,7 @@
 import { Container } from 'typedi';
 import { INTERNAL_AUTH_TOKENS } from './tokens';
 import { AUTH_TOKENS } from '../../shared/di/tokens';
+import { ORGANIZATION_TOKENS as SHARED_ORGANIZATION_TOKENS } from '../../shared/di/tokens';
 import { InMemoryUserCredentialRepository } from '../adapters/in-memory/in-memory-user-credential-repository';
 import { InMemorySessionRepository } from '../adapters/in-memory/in-memory-session-repository';
 import { InMemorySessionService } from '../adapters/in-memory/in-memory-session-service';
@@ -39,7 +40,8 @@ export function configureAuthenticationContext(): void {
     AUTH_TOKENS.AuthFacade,
     new InMemoryAuthenticationFacade(
       Container.get(INTERNAL_AUTH_TOKENS.SessionService),
-      Container.get(INTERNAL_AUTH_TOKENS.UserCredentialRepository)
+      Container.get(INTERNAL_AUTH_TOKENS.UserCredentialRepository),
+      Container.get(SHARED_ORGANIZATION_TOKENS.OrganizationService)
     )
   );
 } 

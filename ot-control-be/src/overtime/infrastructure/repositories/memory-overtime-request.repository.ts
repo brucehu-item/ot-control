@@ -109,6 +109,11 @@ export class MemoryOvertimeRequestRepository implements OvertimeRequestRepositor
           }
         }
 
+        // 设置状态
+        if (requestData.status) {
+          (request as any).status = requestData.status;
+        }
+
         this.requests.set(request.getId(), request);
       }
 

@@ -26,6 +26,8 @@ export class InMemoryUserCredentialRepository implements UserCredentialRepositor
         const credential = new UserCredential(
           user.userId,
           user.username,
+          user.firstName,
+          user.lastName,
           user.password,
           user.role as UserRole
         );

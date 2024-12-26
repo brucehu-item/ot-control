@@ -84,7 +84,11 @@ export class AuthenticationController {
                 userId: user.userId,
                 username: user.username,
                 role: user.role,
-                permissionsCount: user.permissions.length
+                permissionsCount: user.permissions.length,
+                departmentId: user.departmentId,
+                departmentName: user.departmentName,
+                facilityId: user.facilityId,
+                facilityName: user.facilityName
             });
             res.json(user);
         } catch (error) {

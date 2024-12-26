@@ -4,6 +4,8 @@ export class UserCredential {
   constructor(
     private readonly userId: string,
     private readonly username: string,
+    private readonly firstName: string,
+    private readonly lastName: string,
     private password: string,
     private role: UserRole
   ) {}
@@ -14,6 +16,14 @@ export class UserCredential {
 
   public getUsername(): string {
     return this.username;
+  }
+
+  public getFirstName(): string {
+    return this.firstName;
+  }
+
+  public getLastName(): string {
+    return this.lastName;
   }
 
   public getRole(): UserRole {

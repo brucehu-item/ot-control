@@ -4,6 +4,8 @@ export class User {
   constructor(
     private readonly userId: string,
     private readonly username: string,
+    private readonly firstName: string,
+    private readonly lastName: string,
     private role: UserRole,
     private departmentId?: string,
     private facilityId?: string,
@@ -17,6 +19,14 @@ export class User {
 
   public getUsername(): string {
     return this.username;
+  }
+
+  public getFirstName(): string {
+    return this.firstName;
+  }
+
+  public getLastName(): string {
+    return this.lastName;
   }
 
   public getRole(): UserRole {

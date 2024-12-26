@@ -18,7 +18,7 @@ export class GlobalContainer {
 
   static initialize(config?: GlobalConfig): void {
     try {
-      // 重置容器，确保每次初始化都是干净的��态
+      // 重置容器，确保每次初始化都是干净的状态
       Container.reset();
 
       // 根据环境配置认证模块
@@ -35,15 +35,15 @@ export class GlobalContainer {
           throw new Error('Production environment requires overtime configuration');
         }
         // 按照依赖顺序初始化
-        configureAuthForProd(config.auth);
-        configureOrgForProd(config.organization);
-        configureOvertimeForProd(config.overtime);
+        configureOrgForProd(config.organization);  // 先初始化 Organization
+        configureAuthForProd(config.auth);         // 再初始化 Authentication
+        configureOvertimeForProd(config.overtime); // 最后初始化 Overtime
       } else {
         // 开发环境使用内存实现
         // 按照依赖顺序初始化
-        configureAuthForDev();
-        configureOrgForDev();
-        configureOvertimeForDev();
+        configureOrgForDev();    // 先初始化 Organization
+        configureAuthForDev();   // 再初始化 Authentication
+        configureOvertimeForDev(); // 最后初始化 Overtime
       }
 
       // 保存容器实例
