@@ -75,13 +75,18 @@ export class OvertimeRequest {
   getUpdatedAt(): Date { return this.updatedAt; }
   getApprovalRecords(): ApprovalRecord[] { return [...this.approvalRecords]; }
 
+  // 添加审批记录
+  addApprovalRecord(approvalRecord: ApprovalRecord): void {
+    this.approvalRecords.push(approvalRecord);
+  }
+
   // 审批方法
   approve(approverId: string, approverName: string, role: UserRole, comment?: string): void {
     this.validateApprover(approverId, role);
     this.validateStatus(this.getNextStatusAfterApproval(role));
 
     const approvalRecord = new ApprovalRecord(approverId, approverName, role, 'APPROVE', comment);
-    this.approvalRecords.push(approvalRecord);
+    this.addApprovalRecord(approvalRecord);
     this.status = this.getNextStatusAfterApproval(role);
     this.updatedAt = new Date();
   }
@@ -91,7 +96,7 @@ export class OvertimeRequest {
     this.validateStatus(OvertimeRequestStatus.REJECTED);
 
     const approvalRecord = new ApprovalRecord(approverId, approverName, role, 'REJECT', comment);
-    this.approvalRecords.push(approvalRecord);
+    this.addApprovalRecord(approvalRecord);
     this.status = OvertimeRequestStatus.REJECTED;
     this.updatedAt = new Date();
   }
@@ -166,6 +171,33 @@ export class OvertimeRequest {
 
   needsCustomerApproval(): boolean {
     return this.requiresCustomerApproval;
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      startTime: this.startTime,
+      endTime: this.endTime,
+      reason: this.reason,
+      status: this.status,
+      workerId: this.workerId,
+      workerName: this.workerName,
+      departmentId: this.departmentId,
+      departmentName: this.departmentName,
+      facilityId: this.facilityId,
+      facilityName: this.facilityName,
+      supervisorId: this.supervisorId,
+      supervisorName: this.supervisorName,
+      requiresManagerApproval: this.requiresManagerApproval,
+      requiresCustomerApproval: this.requiresCustomerApproval,
+      managerId: this.managerId,
+      managerName: this.managerName,
+      customerId: this.customerId,
+      customerName: this.customerName,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      approvalRecords: this.getApprovalRecords()
+    };
   }
 
   // 业务规则验证

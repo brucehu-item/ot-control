@@ -105,7 +105,7 @@ export class MemoryOvertimeRequestRepository implements OvertimeRequestRepositor
               record.comment,
               new Date(record.timestamp)
             );
-            request.getApprovalRecords().push(approvalRecord);
+            request.addApprovalRecord(approvalRecord);
           }
         }
 
