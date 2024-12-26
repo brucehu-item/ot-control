@@ -2,9 +2,121 @@ import { OvertimeRequest } from '../../domain/aggregates/overtime-request';
 import { OvertimeRequestStatus } from '../../domain/value-objects/overtime-request-status';
 import { RequestSearchCriteria } from '../../domain/value-objects/request-search-criteria';
 import { OvertimeRequestRepository } from '../../domain/repositories/overtime-request.repository';
+import { Service } from 'typedi';
+import fs from 'fs';
+import path from 'path';
+import { ApprovalRecord, ApprovalAction } from '../../domain/value-objects/approval-record';
+import { OvertimeRequestData } from '../../domain/value-objects/overtime-request-data';
+import { UserRole } from '../../domain/value-objects/user-role';
 
+interface ApprovalRecordData {
+  approverId: string;
+  approverName: string;
+  role: string;
+  action: string;
+  comment?: string;
+  timestamp: string;
+}
+
+interface UserData {
+  userId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  role: string;
+  departmentId: string | null;
+  facilityId: string | null;
+  hasApprovalAuthority: boolean;
+  requiresApproval: boolean;
+}
+
+@Service()
 export class MemoryOvertimeRequestRepository implements OvertimeRequestRepository {
   private requests: Map<string, OvertimeRequest> = new Map();
+  private userConfigs: Map<string, UserData> = new Map();
+
+  constructor() {
+    // 初始化用户配置
+    this.initializeUserConfigs();
+    // 初始化mock数据
+    this.initializeMockData();
+  }
+
+  private initializeUserConfigs(): void {
+    try {
+      const usersPath = path.join(process.cwd(), '..', 'mock_data', 'users.json');
+      const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
+      
+      for (const user of usersData.users) {
+        this.userConfigs.set(user.userId, user);
+      }
+    } catch (error) {
+      console.error('Failed to load user configurations:', error);
+    }
+  }
+
+  private initializeMockData(): void {
+    try {
+      // 读取mock数据文件
+      const mockDataPath = path.join(process.cwd(), '..', 'mock_data', 'overtime_requests.json');
+      const overtimeData = JSON.parse(fs.readFileSync(mockDataPath, 'utf-8'));
+
+      // 初始化加班申请数据
+      for (const requestData of overtimeData.overtimeRequests) {
+        // 根据用户配置判断是否需要审批
+        const customerConfig = requestData.customerId ? this.userConfigs.get(requestData.customerId) : undefined;
+        const supervisorConfig = requestData.supervisorId ? this.userConfigs.get(requestData.supervisorId) : undefined;
+
+        // 根据主管的审批权限决定是否需要经理审批
+        const requiresManagerApproval = !supervisorConfig?.hasApprovalAuthority;
+        const requiresCustomerApproval = customerConfig?.requiresApproval ?? false;
+
+        const data = new OvertimeRequestData(
+          new Date(requestData.startTime),
+          new Date(requestData.endTime),
+          requestData.reason,
+          requestData.workerId,
+          requestData.workerName,
+          requestData.departmentId,
+          requestData.departmentName,
+          requestData.facilityId,
+          requestData.facilityName,
+          requestData.supervisorId || '',
+          requestData.supervisorName || '',
+          requiresManagerApproval,
+          requiresCustomerApproval,
+          requestData.managerId,
+          requestData.managerName,
+          requestData.customerId,
+          requestData.customerName
+        );
+
+        const request = new OvertimeRequest(requestData.id, data);
+        
+        // 设置状态和审批记录
+        if (requestData.approvalRecords) {
+          for (const record of requestData.approvalRecords) {
+            const approvalRecord = new ApprovalRecord(
+              record.approverId,
+              record.approverName,
+              record.role as UserRole,
+              record.action as ApprovalAction,
+              record.comment,
+              new Date(record.timestamp)
+            );
+            request.getApprovalRecords().push(approvalRecord);
+          }
+        }
+
+        this.requests.set(request.getId(), request);
+      }
+
+      console.log('Mock overtime requests loaded successfully');
+    } catch (error) {
+      console.error('Failed to load mock overtime requests:', error);
+    }
+  }
 
   async save(request: OvertimeRequest): Promise<void> {
     this.requests.set(request.getId(), request);

@@ -2,6 +2,8 @@ import { Service } from 'typedi';
 import { UserCredential } from '../../domain/model/user-credential';
 import { UserCredentialRepository } from '../../domain/ports/user-credential-repository';
 import { UserRole } from '../../domain/model/user-role';
+import fs from 'fs';
+import path from 'path';
 
 @Service()
 export class InMemoryUserCredentialRepository implements UserCredentialRepository {
@@ -9,26 +11,32 @@ export class InMemoryUserCredentialRepository implements UserCredentialRepositor
   private usernameToId: Map<string, string> = new Map();
 
   constructor() {
-    // 初始化一些测试数据
-    this.initializeTestData();
+    // 初始化mock数据
+    this.initializeMockData();
   }
 
-  private async initializeTestData(): Promise<void> {
-    const adminCredential = new UserCredential(
-      'admin-id',
-      'admin',
-      'admin123',
-      UserRole.SYSTEM_ADMIN
-    );
-    const workerCredential = new UserCredential(
-      'worker-id',
-      'worker',
-      'worker123',
-      UserRole.WORKER
-    );
+  private initializeMockData(): void {
+    try {
+      // 读取mock数据文件
+      const mockDataPath = path.join(process.cwd(), '..', 'mock_data', 'users.json');
+      const usersData = JSON.parse(fs.readFileSync(mockDataPath, 'utf-8'));
 
-    await this.save(adminCredential);
-    await this.save(workerCredential);
+      // 初始化用户凭证
+      for (const user of usersData.users) {
+        const credential = new UserCredential(
+          user.userId,
+          user.username,
+          user.password,
+          user.role as UserRole
+        );
+        this.credentials.set(credential.getUserId(), credential);
+        this.usernameToId.set(credential.getUsername(), credential.getUserId());
+      }
+
+      console.log('Mock user credentials loaded successfully');
+    } catch (error) {
+      console.error('Failed to load mock user credentials:', error);
+    }
   }
 
   async findByUsername(username: string): Promise<UserCredential | null> {
