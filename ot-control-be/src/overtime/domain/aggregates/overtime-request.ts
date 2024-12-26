@@ -250,11 +250,11 @@ export class OvertimeRequest {
         return [OvertimeRequestStatus.SUPERVISOR_APPROVED, OvertimeRequestStatus.REJECTED];
       case OvertimeRequestStatus.SUPERVISOR_APPROVED:
         if (this.needsManagerApproval() && this.needsCustomerApproval()) {
-          return [OvertimeRequestStatus.PENDING_MANAGER, OvertimeRequestStatus.PENDING_CUSTOMER];
+          return [OvertimeRequestStatus.PENDING_MANAGER, OvertimeRequestStatus.PENDING_CUSTOMER, OvertimeRequestStatus.REJECTED];
         } else if (this.needsManagerApproval()) {
-          return [OvertimeRequestStatus.PENDING_MANAGER];
+          return [OvertimeRequestStatus.PENDING_MANAGER, OvertimeRequestStatus.REJECTED];
         } else if (this.needsCustomerApproval()) {
-          return [OvertimeRequestStatus.PENDING_CUSTOMER];
+          return [OvertimeRequestStatus.PENDING_CUSTOMER, OvertimeRequestStatus.REJECTED];
         } else {
           return [OvertimeRequestStatus.APPROVED];
         }
