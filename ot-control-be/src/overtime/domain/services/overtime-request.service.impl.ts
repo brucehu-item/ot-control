@@ -7,29 +7,53 @@ import { UserRole } from '../value-objects/user-role';
 import { OvertimeRequestService } from './overtime-request.service';
 import { OvertimeRequestRepository } from '../repositories/overtime-request.repository';
 import { UserRepository } from '../../../organization/domain/repositories/user.repository';
-import { ORGANIZATION_TOKENS } from '../../../shared/di/tokens';
+import { ORGANIZATION_TOKENS } from '../../../organization/di/tokens';
 import { OVERTIME_TOKENS } from '../../di/tokens';
 import { v4 as uuidv4 } from 'uuid';
+import { OrganizationService } from '../../../organization/domain/services/organization.service';
+import { ORGANIZATION_TOKENS as SHARED_ORGANIZATION_TOKENS } from '../../../shared/di/tokens';
 
 @Service(OVERTIME_TOKENS.OvertimeRequestService)
 export class OvertimeRequestServiceImpl implements OvertimeRequestService {
   constructor(
     @Inject(OVERTIME_TOKENS.OvertimeRequestRepository)
     private readonly overtimeRequestRepository: OvertimeRequestRepository,
-    @Inject(ORGANIZATION_TOKENS.UserRepository)
-    private readonly userRepository: UserRepository
+    @Inject(ORGANIZATION_TOKENS.USER_REPOSITORY)
+    private readonly userRepository: UserRepository,
+    @Inject(SHARED_ORGANIZATION_TOKENS.OrganizationService)
+    private readonly organizationService: OrganizationService
   ) {}
 
   async createRequest(data: OvertimeRequestData): Promise<OvertimeRequest> {
     // 验证时间
     this.validateRequestTimes(data.startTime, data.endTime);
 
+    // 获取部门的主管信息
+    const departmentHierarchy = await this.organizationService.getDepartmentHierarchy(data.departmentId);
+    const supervisorId = departmentHierarchy.getSupervisorId();
+    const supervisorName = departmentHierarchy.getSupervisorName();
+
+    if (!supervisorId || !supervisorName) {
+      throw new Error('Department supervisor not found');
+    }
+
     // 获取主管信息，判断是否需要经理审批
-    const supervisor = await this.userRepository.findById(data.supervisorId);
+    const supervisor = await this.userRepository.findById(supervisorId);
     if (!supervisor) {
       throw new Error('Supervisor not found');
     }
     const requiresManagerApproval = !supervisor.canApproveRequests();
+
+    // 如果需要经理审批，获取经理信息
+    let managerId = undefined;
+    let managerName = undefined;
+    if (requiresManagerApproval) {
+      managerId = departmentHierarchy.getManagerId();
+      managerName = departmentHierarchy.getManagerName();
+      if (!managerId || !managerName) {
+        throw new Error('Facility manager not found');
+      }
+    }
 
     // 如果有客户ID，获取客户信息，判断是否需要客户审批
     let requiresCustomerApproval = false;
@@ -52,12 +76,12 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       data.departmentName,
       data.facilityId,
       data.facilityName,
-      data.supervisorId,
-      data.supervisorName,
+      supervisorId,
+      supervisorName,
       requiresManagerApproval,
       requiresCustomerApproval,
-      data.managerId,
-      data.managerName,
+      managerId,
+      managerName,
       data.customerId,
       data.customerName
     );
