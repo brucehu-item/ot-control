@@ -75,6 +75,13 @@ export class OvertimeRequest {
   getUpdatedAt(): Date { return this.updatedAt; }
   getApprovalRecords(): ApprovalRecord[] { return [...this.approvalRecords]; }
 
+  // 设置经理信息
+  setManager(managerId: string, managerName: string): void {
+    this.managerId = managerId;
+    this.managerName = managerName;
+    this.updatedAt = new Date();
+  }
+
   // 添加审批记录
   addApprovalRecord(approvalRecord: ApprovalRecord): void {
     this.approvalRecords.push(approvalRecord);

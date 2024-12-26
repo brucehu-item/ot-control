@@ -113,8 +113,21 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       throw new Error('Approver not found');
     }
 
-    if (!approver.canApproveRequests()) {
-      throw new Error('User is not authorized to approve requests');
+    // 如果是经理审批，且请求没有经理信息，先设置经理信息
+    if (role === UserRole.MANAGER && !request.getManagerId()) {
+      const departmentHierarchy = await this.organizationService.getDepartmentHierarchy(request.getDepartmentId());
+      const facilityManagerId = departmentHierarchy.getManagerId();
+      const facilityManagerName = departmentHierarchy.getManagerName();
+      
+      if (!facilityManagerId || !facilityManagerName) {
+        throw new Error('Facility manager not found');
+      }
+
+      if (approverId !== facilityManagerId) {
+        throw new Error('Only the facility manager can approve this request');
+      }
+
+      request.setManager(facilityManagerId, facilityManagerName);
     }
 
     request.approve(approverId, approverName, role, comment);
@@ -139,8 +152,21 @@ export class OvertimeRequestServiceImpl implements OvertimeRequestService {
       throw new Error('Approver not found');
     }
 
-    if (!approver.canApproveRequests()) {
-      throw new Error('User is not authorized to reject requests');
+    // 如果是经理审批，且请求没有经理信息，先设置经理信息
+    if (role === UserRole.MANAGER && !request.getManagerId()) {
+      const departmentHierarchy = await this.organizationService.getDepartmentHierarchy(request.getDepartmentId());
+      const facilityManagerId = departmentHierarchy.getManagerId();
+      const facilityManagerName = departmentHierarchy.getManagerName();
+      
+      if (!facilityManagerId || !facilityManagerName) {
+        throw new Error('Facility manager not found');
+      }
+
+      if (approverId !== facilityManagerId) {
+        throw new Error('Only the facility manager can reject this request');
+      }
+
+      request.setManager(facilityManagerId, facilityManagerName);
     }
 
     request.reject(approverId, approverName, role, comment);
