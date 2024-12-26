@@ -14,8 +14,11 @@ Currently, this methodology can help complete 80%-85% of the work in building a 
 
 ## 🚀 Implemented Projects
 
-### `ot-control-bruce`
+### `ot-control-fe`
 A complete frontend project built using this methodology, implementing most of the functionalities in the requirement document.
+
+### `ot-control-be`
+The backend service for the overtime management system, built with Node.js, Express, and TypeScript.
 
 ### `ot-control-init`
 Empty project template for those who want to try this methodology.
@@ -24,17 +27,18 @@ Empty project template for those who want to try this methodology.
 
 ```
 ot-control-web/
-├── 🏭 ot-control-bruce/  Bruce's frontend project directory for overtime management system
-├── 📝 docs/              Supplementary documentation directory
-├── 🎯 api_specs/         API specification documents, the "contract" between frontend and backend
-├── 🧩 domain_analysis/   Domain analysis documents, the bridge to code implementation
-├── 🎨 design_guideline/  Design specification guide, including frontend and API standards
-├── 📊 page_analysis/     Page analysis documents, implementation specifications for each frontend page
-├── 🤖 prompt/            AI prompt-related documents
-├── 🎭 mock_data/         Mock data for frontend testing independent of backend
-├── 🌱 ot-control-init/   Initial project template for those who want to use this methodology
-├── 📋 requirement.md     Requirement document
-└── 📚 user_stories.md    User stories document
+├── 🏭 ot-control-fe/    Frontend project directory for overtime management system
+├── 🚀 ot-control-be/    Backend service for overtime management system
+├── 📝 docs/             Supplementary documentation directory
+├── 🎯 api_specs/        API specification documents, the "contract" between frontend and backend
+├── 🧩 domain_analysis/  Domain analysis documents, the bridge to code implementation
+├── 🎨 design_guideline/ Design specification guide, including frontend and API standards
+├── 📊 page_analysis/    Page analysis documents, implementation specifications for each frontend page
+├── 🤖 prompt/           AI prompt-related documents
+├── 🎭 mock_data/        Mock data for frontend testing independent of backend
+├── 🌱 ot-control-init/  Initial project template for those who want to use this methodology
+├── 📋 requirement.md    Requirement document
+└── 📚 user_stories.md   User stories document
 ```
 
 ## 🚀 Building Steps
@@ -68,4 +72,8 @@ ot-control-web/
 
 ## 🔍 Local Development
 
-If you want to run the `ot-control-bruce` project locally, please refer to `ot-control-bruce/README.md`
+### Frontend
+If you want to run the `ot-control-fe` project locally, please refer to `ot-control-fe/README.md`
+
+### Backend
+For running the `ot-control-be` backend service locally, please refer to `ot-control-be/README.md`
